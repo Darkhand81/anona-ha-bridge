@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [aarch64, amd64, armv7]
+        arch: [aarch64, amd64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,7 +36,6 @@ jobs:
           case "${{ matrix.arch }}" in
             aarch64) export GOARCH=arm64 ;;
             amd64)   export GOARCH=amd64 ;;
-            armv7)   export GOARCH=arm GOARM=7 ;;
             *) echo "unknown arch ${{ matrix.arch }}" >&2; exit 1 ;;
           esac
           mkdir -p addon/anona_bridge/bin
@@ -52,9 +51,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push add-on image
-        # Pinned: the current builder (@master, 2026.x) dropped the per-arch
-        # --armv7 flag; 2024.08.2 still supports --aarch64/--amd64/--armv7.
-        uses: home-assistant/builder@2024.08.2
+        uses: home-assistant/builder@master
         with:
           args: >-
             --${{ matrix.arch }}

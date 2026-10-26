@@ -18,7 +18,6 @@ init: false
 arch:
   - aarch64
   - amd64
-  - armv7
 # Pull MQTT broker credentials from the Mosquitto add-on automatically when the
 # mqtt_url option is left blank.
 services:
