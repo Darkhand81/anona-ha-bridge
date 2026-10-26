@@ -1,0 +1,719 @@
+// smart_ipcamera.proto  package=  deps=['nanopb.proto', 'smart_common.proto', 'smart_event.proto', 'smart_ipcamera_status.proto']
+enum TrackId {
+  TRACK_UNKNOWN = 0;
+  TRACK_PRIMARY = 1;
+  TRACK_SECONDARY = 2;
+}
+enum LiveResolutionChoice {
+  LR_480P = 1;
+  LR_720P = 2;
+  LR_1080P = 3;
+  LR_2K5 = 4;
+  LR_4K = 5;
+  LR_3K = 6;
+  LR_AUTO = 20;
+  LR_UHD = 21;
+  LR_HD = 22;
+  LR_SMOOTH = 23;
+}
+enum VideoType {
+  CONTINUOUS_VIDEO = 1;
+  EVENT_VIDEO = 2;
+  AOV_VIDEO = 3;
+}
+enum AovInterval {
+  THREE_SECOND_PER_FRAME = 1;
+  FIVE_SECOND_PER_FRAME = 2;
+  TEN_SECOND_PER_FRAME = 3;
+  THIRTY_SECOND_PER_FRAME = 4;
+  SIXTY_SECOND_PER_FRAME = 5;
+  THREE_HUNDRED_SECOND_PER_FRAME = 6;
+  ONE_SECOND_PER_FRAME = 7;
+  TWO_SECOND_PER_FRAME = 8;
+}
+enum AppActionType {
+  LIVE_QUICK_REPLY = 1;
+}
+message IPCamera {
+  enum IPCameraID {
+    REPORT_IPCAMERA_EVENT = 1;
+    REPORT_IPCAMERA_EVENTS = 2;
+    REPORT_IPCAMERA_STATUS = 3;
+    REPORT_IPCAMERA_STATUSS = 8;
+    GET_IPCAMERA_STATUS = 4;
+    DISCONNECT_P2P = 6;
+    KEEP_P2P_CONNECTION = 7;
+    SYNC_P2P_CONFIG = 9;
+    SYNC_P2P_CONFIG_DISCONNECT = 10;
+    WAKE_UP_DEVICE = 11;
+    SET_DOORBELL_CONFIG = 13;
+    GET_CHARGE_CONFIG = 14;
+    SET_CHARGE_CONFIG = 15;
+    GET_LONG_ENDURANCE = 16;
+    SET_LONG_ENDURANCE = 17;
+    GET_CAMERA_CONTROL = 18;
+    SET_CAMERA_CONTROL = 19;
+    GET_CAMERA_DISPLAY = 20;
+    SET_CAMERA_DISPLAY = 21;
+    GET_NIGHT_VISION = 22;
+    SET_NIGHT_VISION = 23;
+    GET_RECORDING_CONFIG = 24;
+    SET_RECORDING_CONFIG = 25;
+    GET_PRIVACY_AREA = 26;
+    SET_PRIVACY_AREA = 27;
+    GET_AOV_CONFIG = 28;
+    SET_AOV_CONFIG = 29;
+    GET_AUDIO_CONFIG = 30;
+    SET_AUDIO_CONFIG = 31;
+    GET_INDICATOR_LIGHT = 32;
+    SET_INDICATOR_LIGHT = 33;
+    GET_WHITE_LIGHT = 34;
+    SET_WHITE_LIGHT = 35;
+    WHITE_LIGHT_CHANGE = 36;
+    GET_SOUND_LIGHT = 37;
+    SET_SOUND_LIGHT = 38;
+    SOUND_LIGHT_CHANGE = 39;
+    NOTIFY_BASESTATION_ALARM = 40;
+    GET_MOTION_DETECTION = 48;
+    SET_MOTION_DETECTION = 49;
+    GET_AI_DETECTION = 50;
+    SET_AI_DETECTION = 51;
+    GET_DETECTION_ALARM = 52;
+    SET_DETECTION_ALARM = 53;
+    GET_SOUND_DETECTION = 54;
+    SET_SOUND_DETECTION = 55;
+    FORMAT_MEMORY_STORAGE = 64;
+    GET_MEMORY_STORAGE = 65;
+    MEMORY_STORAGE_CHANGE = 66;
+    REMOVE_MEMORY_CARD = 67;
+    GET_MEMORY_STORAGE_CONFIG = 68;
+    SET_MEMORY_STORAGE_CONFIG = 69;
+    GET_BASESTATION_CONFIG = 72;
+    SET_BASESTATION_CONFIG = 73;
+    SYNC_DETECTION_ASSISTANT_CONFIG = 80;
+    REPORT_DETECTION_RESULT = 81;
+    UPLOAD_INFO_REQUEST = 82;
+    UPLOAD_INFO_RESPONSE = 83;
+    REPORT_UPLOADED_INFO = 84;
+    REPORT_LOCAL_RECODE_LIST = 85;
+    COMPLETE_RECORDING = 86;
+    DAILY_VIDEO_STATUS = 87;
+    TIMELINE_VIDEO_LIST = 88;
+    FILTERED_VIDEO_LIST = 89;
+    P2P_DOWNLOAD_VIDEO = 90;
+    P2P_DOWNLOAD_EVENT_VIDEO = 104;
+    P2P_DOWNLOAD_START_SLICE = 91;
+    P2P_DOWNLOAD_START_THUMBNAIL = 92;
+    P2P_DOWNLOAD_START = 93;
+    P2P_DOWNLOAD_START_PANORAMA_PICTURE = 94;
+    LOCAL_VIDEO_DELETE_LIST = 95;
+    P2P_DOWNLOAD_FINISH = 110;
+    P2P_DOWNLOAD_STOP_PANORAMA_PICTURE = 111;
+    WEB_RTC_START = 96;
+    WEB_RTC_CANDIDATE = 97;
+    WEB_RTC_DISCONNECT = 98;
+    WEB_RTC_WAKE_UP = 99;
+    P2P_LIVE_STREAM_START = 100;
+    P2P_LIVE_STREAM_STOP = 101;
+    P2P_VOICE_START = 102;
+    P2P_VOICE_STOP = 103;
+    RESET_PAN_TILT = 106;
+    CONTROL_PAN_TILT = 107;
+    CHANGE_PAN_TILT_POSITION = 108;
+    GET_PAN_TILT_CURRENT_POSITION = 109;
+    REBOOT_CAMERA = 112;
+    GET_OTHER_CONFIG = 113;
+    SET_OTHER_CONFIG = 114;
+    SNAPSHOT_REQUEST = 115;
+    SNAPSHOT_RESPONSE = 116;
+    APP_ACTION_INFO = 117;
+    WILDLIFE_UPLOAD_REQUEST = 118;
+    WILDLIFE_UPLOAD_RESPONSE = 119;
+    WILDLIFE_UPLOAD_COMPLETE = 120;
+    WILDLIFE_DETECTION_RESULT = 121;
+  }
+  enum EventID {
+    SPURIOUS_DECTION = 1;
+    START_RECORDING = 2;
+    PEOPLE_RINGING_DOORBELL = 3;
+    PRIVACY_ON = 4;
+    PRIVACY_OFF = 5;
+  }
+  enum PropertyID {
+    ALG_TAG = 1;
+    TIMESTAMP = 2;
+    TOTAL_DURATION = 3;
+    STORAGE_LOCATION = 4;
+    SOUND_LIGHT_ALARM_ON = 5;
+    TRACK_ID = 6;
+    PRIVACY_MODE_SOURCES = 7;
+    PRIVACY_NEXT_CLOSE_UTC_MS = 8;
+    PUSH_NOTIFY = 9;
+  }
+  optional Event event = 1; /*oneof payload*/
+  optional Event.List event_list = 2; /*oneof payload*/
+  optional IPCameraStatus ip_camera_status = 3; /*oneof payload*/
+  optional IPCameraStatus.List ip_camera_status_list = 10; /*oneof payload*/
+  optional P2PConnect.Request p2p_connect_request = 4; /*oneof payload*/
+  optional P2PConnect.Response p2p_connect_response = 5; /*oneof payload*/
+  optional P2PDisconnect.Request p2p_disconnect_request = 6; /*oneof payload*/
+  optional P2PDisconnect.Response p2p_disconnect_response = 7; /*oneof payload*/
+  optional P2PKeepConnection.Request p2p_keep_connection_request = 8; /*oneof payload*/
+  optional P2PKeepConnection.Response p2p_keep_connection_response = 9; /*oneof payload*/
+  optional SyncP2pConfig sync_p2p_config = 11; /*oneof payload*/
+  optional SyncP2pConfigDisconnect sync_p2p_config_disconnect = 12; /*oneof payload*/
+  optional WakeupDevice.Request wakeup_device_request = 13; /*oneof payload*/
+  optional WakeupDevice.Response wakeup_device_response = 14; /*oneof payload*/
+  optional DoorbellConfig doorbell_config = 18; /*oneof payload*/
+  optional ChargeConfig charge_config = 19; /*oneof payload*/
+  optional LongEndurance long_endurance = 20; /*oneof payload*/
+  optional CameraControl camera_sleep = 21; /*oneof payload*/
+  optional CameraDisplay camera_display = 22; /*oneof payload*/
+  optional NightVision night_vision = 23; /*oneof payload*/
+  optional RecordingConfig recording_config = 24; /*oneof payload*/
+  optional PrivacyArea privacy_area = 25; /*oneof payload*/
+  optional AovConfig aov_config = 26; /*oneof payload*/
+  optional AudioConfig audio_config = 27; /*oneof payload*/
+  optional IndicatorLight indicator_light = 28; /*oneof payload*/
+  optional WhiteLight white_light = 29; /*oneof payload*/
+  optional SoundLight sound_light = 30; /*oneof payload*/
+  optional RebootCamera reboot_camera = 31; /*oneof payload*/
+  optional OtherConfig other_config = 33; /*oneof payload*/
+  optional MotionDetection motion_detection = 40; /*oneof payload*/
+  optional AiDetection ai_detection = 41; /*oneof payload*/
+  optional DetectionAlarm detection_alarm = 42; /*oneof payload*/
+  optional SoundDetection sound_detection = 43; /*oneof payload*/
+  optional MemoryStorageConfig memory_storage_config = 48; /*oneof payload*/
+  optional FormatStorage.Request format_storage_request = 50; /*oneof payload*/
+  optional FormatStorage.Response format_storage_response = 51; /*oneof payload*/
+  optional MemoryStorage memory_storage = 52; /*oneof payload*/
+  optional BaseStationConfig base_station_config = 53; /*oneof payload*/
+  optional DetectionAssistant.Config detection_assistant_config = 60; /*oneof payload*/
+  optional DetectionAssistant.DetectionResult.List detection_assistant_result_list = 61; /*oneof payload*/
+  optional DetectionAssistant.UploadInfo.Request detection_assistant_upload_info_request = 62; /*oneof payload*/
+  optional DetectionAssistant.UploadInfo.Response detection_assistant_upload_info_response = 63; /*oneof payload*/
+  optional DetectionAssistant.UploadInfo.Notify.List detection_assistant_upload_info_notify_list = 64; /*oneof payload*/
+  optional DetectionAssistant.LocalRecord.List detection_assistant_local_record_list = 65; /*oneof payload*/
+  optional DetectionAssistant.RecordingDone detection_assistant_recording_done = 66; /*oneof payload*/
+  optional WebRtcStart.Request webrtc_start_request = 70; /*oneof payload*/
+  optional WebRtcStart.Response webrtc_start_response = 71; /*oneof payload*/
+  optional WebRtcCandidate webrtc_candidate = 72; /*oneof payload*/
+  optional WebRtcDisconnect webrtc_disconnect = 73; /*oneof payload*/
+  optional WebRtcWakeup webrtc_wakeup = 74; /*oneof payload*/
+  optional P2PLiveStream.Start.Request p2p_livestream_start_request = 75; /*oneof payload*/
+  optional P2PLiveStream.Start.Response p2p_livestream_start_response = 76; /*oneof payload*/
+  optional P2PLiveStream.Stop p2p_livestream_stop = 77; /*oneof payload*/
+  optional PanTiltControl pan_tilt_control = 80; /*oneof payload*/
+  optional PanTiltPosition pan_tilt_position = 81; /*oneof payload*/
+  optional DailyVideoStatus.Request daily_video_status_request = 90; /*oneof payload*/
+  optional DailyVideoStatus.Response daily_video_status_response = 91; /*oneof payload*/
+  optional TimelineVideoList.Request timeline_video_list_request = 92; /*oneof payload*/
+  optional TimelineVideoList.Response timeline_video_list_response = 93; /*oneof payload*/
+  optional FilteredVideoList.Request filtered_video_list_request = 94; /*oneof payload*/
+  optional FilteredVideoList.Response filtered_video_list_response = 95; /*oneof payload*/
+  optional P2PDownload.VideoRequest p2p_download_video_request = 96; /*oneof payload*/
+  optional P2PDownload.VideoResponse p2p_download_video_response = 97; /*oneof payload*/
+  optional P2PDownload.StartDownloadSliceRequest p2p_start_download_slice_request = 98; /*oneof payload*/
+  optional P2PDownload.StartDownloadSliceResponse p2p_start_download_slice_response = 99; /*oneof payload*/
+  optional P2PDownload.StartDownloadThumbnailRequest p2p_start_download_thumbnail_request = 100; /*oneof payload*/
+  optional P2PDownload.StartDownloadThumbnailResponse p2p_start_download_thumbnail_response = 101; /*oneof payload*/
+  optional P2PDownload.Start p2p_download_start = 102; /*oneof payload*/
+  optional LocalVideoDelete.List local_video_delete_list = 104; /*oneof payload*/
+  optional P2PDownload.EventVideoRequest p2p_download_event_video_request = 105; /*oneof payload*/
+  optional P2PDownload.Finish p2p_download_finish = 107; /*oneof payload*/
+  optional P2PDownload.StartDownloadPanoramaPictureRequest p2p_start_download_panorama_picture_request = 103; /*oneof payload*/
+  optional P2PDownload.StartDownloadPanoramaPictureResponse p2p_start_download_panorama_picture_response = 106; /*oneof payload*/
+  optional P2PDownload.StopDownloadPanoramaPictureRequest p2p_stop_download_panorama_picture_request = 108; /*oneof payload*/
+  optional P2PVoice.Start.Request p2p_voice_start_request = 120; /*oneof payload*/
+  optional P2PVoice.Start.Response p2p_voice_start_response = 121; /*oneof payload*/
+  optional P2PVoice.Stop p2p_voice_stop = 122; /*oneof payload*/
+  optional SnapshotRequest snapshot_request = 88; /*oneof payload*/
+  optional SnapshotResponse snapshot_response = 89; /*oneof payload*/
+  optional AppActionInfo app_action_info = 87; /*oneof payload*/
+  optional WildlifeDetection.UploadRequest wildlife_detection_upload_request = 123; /*oneof payload*/
+  optional WildlifeDetection.UploadResponse wildlife_detection_upload_response = 124; /*oneof payload*/
+  optional WildlifeDetection.UploadComplete wildlife_detection_upload_complete = 125; /*oneof payload*/
+  optional WildlifeDetection.Result wildlife_detection_result = 126; /*oneof payload*/
+}
+message P2PConnect {
+  message Request {
+    required uint32 remote_peer = 1;
+    required uint32 duration_seconds = 2;
+    optional string signaling_channel_name = 3;
+    optional string ak = 4;
+    optional string sk = 5;
+    optional string token = 6;
+    optional string region = 7;
+    optional string signaling_channel_arn = 8;
+    optional bool use_trickle_ice = 9;
+    optional string https_endpoint = 10;
+    optional string wss_endpoint = 11;
+    optional string stun_address = 12;
+    optional bool stun_only = 13;
+  }
+  message Response {
+    required string signaling_channel_name = 1;
+    required ErrorCode error_code = 2;
+    optional string ak = 4;
+    optional string sk = 5;
+    optional string token = 6;
+    optional string region = 7;
+    optional string signaling_channel_arn = 8;
+    optional bool use_trickle_ice = 9;
+    optional string https_endpoint = 10;
+    optional string wss_endpoint = 11;
+    optional string stun_address = 12;
+    optional bool stun_only = 13;
+  }
+}
+message P2PDisconnect {
+  message Request {
+    required string signaling_channel_name = 1;
+  }
+  message Response {
+    required string signaling_channel_name = 1;
+    required ErrorCode error_code = 2;
+  }
+}
+message SyncP2pConfig {
+  required uint32 remote_peer = 1;
+  required string p2p_key = 2;
+  required string client_id = 3;
+  optional string stun_address = 4;
+  optional string turn_address = 5;
+  optional string turn_username = 6;
+  optional string turn_password = 7;
+}
+message SyncP2pConfigDisconnect {
+  required string client_id = 1;
+}
+message WakeupDevice {
+  message Request {
+    optional uint32 wakeup_duration = 1;
+  }
+  message Response {
+    required ErrorCode error_code = 1;
+  }
+}
+message FormatStorage {
+  enum TYPE {
+    INTERNAL = 1;
+    EXTERNAL = 2;
+  }
+  enum Status {
+    FAILED = 1;
+    OPERATING = 2;
+    COMPLETED = 3;
+  }
+  message Request {
+    required FormatStorage.TYPE type = 1;
+  }
+  message Response {
+    required FormatStorage.TYPE type = 1;
+    optional MemoryStorage memory_storage = 2;
+  }
+}
+message DetectionAssistant {
+  message Config {
+    enum Code {
+      CLOUD_STORAGE_DISABLE = 1;
+      CLOUD_STORAGE_ENABLE = 2;
+    }
+    required string session_id = 1;
+    required DetectionAssistant.Config.Code code = 2;
+    optional uint64 evt_ts = 3;
+  }
+  message DetectionResult {
+    message List {
+      repeated DetectionAssistant.DetectionResult list = 1;
+    }
+    required IPCamera.EventID event_id = 1;
+    required AlgTag alg_tag = 2;
+    required uint64 timestamp = 3;
+    required string session_id = 4;
+    optional TrackId track_id = 5;
+    optional bool push = 6;
+  }
+  message UploadInfo {
+    message Request {
+      required string session_id = 1;
+      repeated uint32 id_list = 2;
+      optional string cover_suffix = 3;
+      optional string video_suffix = 4;
+      optional string cover_content_type = 5;
+      optional string video_content_type = 6;
+      optional TrackId track_id = 7;
+    }
+    message Response {
+      required string session_id = 1;
+      repeated DetectionAssistant.UploadInfo video_upload_info_list = 2;
+      optional DetectionAssistant.UploadInfo cover_upload_info = 3;
+      optional TrackId track_id = 4;
+    }
+    message Notify {
+      message List {
+        required string session_id = 1;
+        repeated DetectionAssistant.UploadInfo.Notify list = 2;
+      }
+      required string key = 1;
+      required uint32 fragment_duration = 2;
+      optional bool is_cover = 3;
+      optional VideoResolution video_resolution = 4;
+      optional uint32 video_size = 5;
+      optional TrackId track_id = 6;
+    }
+    required string url = 1;
+    required string key = 2;
+    optional uint32 id = 3;
+  }
+  message LocalRecord {
+    message List {
+      repeated DetectionAssistant.LocalRecord list = 1;
+    }
+    required string session_id = 1;
+    required string video_file_dir = 2;
+    required string image_file_dir = 3;
+    optional VideoResolution video_resolution = 4;
+    optional TrackId track_id = 5;
+  }
+  message RecordingDone {
+    required string session_id = 1;
+  }
+}
+message WebRtcStart {
+  message Request {
+    message TurnInfo {
+      message List {
+        repeated WebRtcStart.Request.TurnInfo list = 1;
+      }
+      required string turn_address = 1;
+      required string user_name = 2;
+      required string pass_word = 3;
+    }
+    message P2PLiveInfo {
+      required bool live = 1;
+      optional VideoResolution manualResolution = 2;
+      optional LiveResolutionChoice resolutionChoice = 3;
+    }
+    required uint32 client_type = 1;
+    required string client_id = 2;
+    required bytes sdp_offer_compressed = 3;
+    required string stun_address = 4;
+    required WebRtcStart.Request.TurnInfo.List turn_info_list = 5;
+    optional WebRtcStart.Request.P2PLiveInfo p2p_live_info = 6;
+    optional bool is_shared_user = 7;
+    optional SnapshotRequest snapshot_request = 8;
+    optional bool use_trickle_ice = 9;
+  }
+  message Response {
+    required ErrorCode error_code = 1;
+    optional bytes sdp_answer_compressed = 2;
+    optional uint32 client_type = 3;
+    optional string client_id = 4;
+    optional bool use_trickle_ice = 5;
+  }
+}
+message WebRtcCandidate {
+  required uint32 client_type = 1;
+  required string client_id = 2;
+  required string candidate = 3;
+  required string sdp_mid = 4;
+  required string sdp_m_line_index = 5;
+}
+message WebRtcDisconnect {
+  required uint32 client_type = 1;
+  required string client_id = 2;
+}
+message WebRtcWakeup {
+  required uint32 client_type = 1;
+  required string client_id = 2;
+}
+message PanTiltControl {
+  enum Direction {
+    UP = 1;
+    DOWN = 2;
+    LEFT = 3;
+    RIGHT = 4;
+    STOP = 5;
+  }
+  enum ActionType {
+    CLICK = 1;
+    CONTINUOUS = 2;
+  }
+  required PanTiltControl.Direction direction = 1;
+  required PanTiltControl.ActionType action_type = 2;
+}
+message DailyVideoStatus {
+  message Request {
+    required uint64 start_timestamp = 1;
+    required uint64 end_timestamp = 2;
+    optional string url = 3;
+  }
+  message Property {
+    repeated AlgTag tags = 1;
+  }
+  message DailyStatus {
+    required uint64 date = 1;
+    repeated DailyVideoStatus.Property property = 2;
+    optional uint32 video_type = 3;
+  }
+  message Response {
+    required ErrorCode error = 1;
+    required bool has_more = 2;
+    repeated DailyVideoStatus.DailyStatus daily_status = 3;
+  }
+}
+message TimelineVideoList {
+  enum TimelineType {
+    CONTINUOUS_EVENT = 31;
+    AOV = 2;
+    CONTINUOUS_EVENT_AOV = 3;
+  }
+  message EventInfo {
+    required AlgTag type = 1;
+    required uint64 start_time = 2;
+    required uint64 end_time = 3;
+    optional TrackId track_id = 4;
+  }
+  message VideoClip {
+    required uint64 start_time = 1;
+    required uint64 end_time = 2;
+    required VideoType type = 3;
+    repeated TimelineVideoList.EventInfo events = 4;
+    optional uint64 aov_start_pts = 5;
+    optional uint64 aov_end_pts = 6;
+    optional AovInterval aov_interval = 7;
+  }
+  message Request {
+    required uint64 start_timestamp = 1;
+    required uint64 end_timestamp = 2;
+    optional string url = 3;
+    optional TimelineVideoList.TimelineType timeline_type = 4;
+  }
+  message Response {
+    required ErrorCode error = 1;
+    repeated TimelineVideoList.VideoClip videos = 2;
+    repeated TimelineVideoList.EventInfo events = 3;
+    optional bool has_more = 4;
+  }
+}
+message FilteredVideoList {
+  enum Direction {
+    FORWARD = 1;
+    BACKWARD = 2;
+  }
+  enum VideoTypeFilter {
+    ALL_TYPE = 1;
+    CONTINUOUS = 2;
+    EVENT = 3;
+    AOV = 4;
+    CONTINUOUS_EVENT_AOV = 5;
+  }
+  message VideoClip {
+    required uint64 start_time = 1;
+    required uint64 end_time = 2;
+    required VideoType type = 3;
+    repeated AlgTag event_tags = 4;
+    optional bool unremovable = 5;
+    optional uint64 aov_start_pts = 6;
+    optional uint64 aov_end_pts = 7;
+    optional AovInterval aov_interval = 8;
+  }
+  message Request {
+    required uint64 reference_time = 1;
+    required FilteredVideoList.Direction direction = 2;
+    required uint32 max_count = 3;
+    required FilteredVideoList.VideoTypeFilter video_type_filter = 4;
+    repeated AlgTag event_type_filter = 5;
+    optional string url = 6;
+  }
+  message Response {
+    required ErrorCode error = 1;
+    repeated FilteredVideoList.VideoClip videos = 2;
+    required bool has_more = 3;
+  }
+}
+message P2PDownload {
+  enum PlayMode {
+    NORMAL = 1;
+    SPEED_4X = 2;
+    SPEED_16X = 3;
+    SPEED_32X = 4;
+    SPEED_DAILY_OVERVIEW = 5;
+  }
+  message SliceInfo {
+    required uint64 start_timestamp = 1;
+    required uint64 end_timestamp = 2;
+    optional uint64 aov_start_pts = 3;
+    optional uint64 aov_end_pts = 4;
+  }
+  message VideoRequest {
+    required uint64 data_id = 1;
+    required P2PDownload.PlayMode play_mode = 2;
+    required uint64 start_timestamp = 3;
+    required uint64 end_timestamp = 4;
+    required uint32 client_type = 5;
+    required string client_id = 6;
+    optional uint32 max_slice_count = 7;
+    optional string url = 8;
+  }
+  message EventVideoRequest {
+    required uint64 data_id = 1;
+    required P2PDownload.PlayMode play_mode = 2;
+    required string event_id = 3;
+    required uint32 client_type = 4;
+    required string client_id = 5;
+    optional uint32 max_slice_count = 6;
+    optional uint64 start_timestamp = 7;
+    optional string url = 8;
+  }
+  message VideoResponse {
+    required ErrorCode error = 1;
+    required uint64 data_id = 2;
+    required CODEC video_codec = 3;
+    required CODEC audio_codec = 4;
+    repeated P2PDownload.SliceInfo slice_info = 5;
+    required bool has_more = 6;
+    optional uint32 capability_max_slice_count = 7;
+    optional uint64 event_video_start_timestamp = 8;
+    optional uint64 event_video_end_timestamp = 9;
+    optional bool unremovable = 10;
+  }
+  message StartDownloadThumbnailRequest {
+    required uint64 data_id = 1;
+    required uint64 timestamp = 2;
+    required uint32 client_type = 3;
+    required string client_id = 4;
+    optional string url = 5;
+  }
+  message StartDownloadThumbnailResponse {
+    required ErrorCode error = 1;
+    required uint64 data_id = 2;
+    optional uint64 timestamp = 3;
+    optional uint32 file_size = 4;
+    optional ImageFormat format = 5;
+  }
+  message Start {
+    required uint64 data_id = 1;
+    required uint32 slice_index = 2;
+    required uint32 client_type = 3;
+    required string client_id = 4;
+    optional bool is_jump = 5;
+    optional string url = 6;
+  }
+  message Finish {
+    required uint64 data_id = 1;
+    required uint32 client_type = 2;
+    required string client_id = 3;
+    optional string url = 4;
+  }
+  message StartDownloadSliceRequest {
+    required uint64 data_id = 1;
+    required uint32 client_type = 2;
+    required string client_id = 3;
+    required uint64 start_timestamp = 4;
+    optional string url = 5;
+  }
+  message StartDownloadSliceResponse {
+    required uint64 data_id = 1;
+    required ErrorCode error = 2;
+    optional uint32 sensor_count = 3;
+  }
+  message StartDownloadPanoramaPictureRequest {
+    required uint64 data_id = 1;
+    required uint32 client_type = 2;
+    required string client_id = 3;
+    required uint32 pos_x = 4;
+    required bool is_last = 5;
+  }
+  message StartDownloadPanoramaPictureResponse {
+    required uint64 data_id = 1;
+    required ErrorCode error = 2;
+    required bool need_app_capture = 3;
+  }
+  message StopDownloadPanoramaPictureRequest {
+    required uint32 client_type = 1;
+    required string client_id = 2;
+  }
+}
+message LocalVideoDelete {
+  message List {
+    repeated LocalVideoDelete list = 1;
+  }
+  required uint64 start_timestamp = 1;
+  required uint64 end_timestamp = 2;
+  optional string event_id = 3;
+  optional string url = 4;
+}
+message P2PLiveStream {
+  message Start {
+    message Request {
+      required uint32 client_type = 1;
+      required string client_id = 2;
+      optional LiveResolutionChoice resolutionChoice = 3;
+    }
+    message Response {
+      required ErrorCode error_code = 1;
+      required CODEC video_codec = 2;
+      required CODEC audio_codec = 3;
+    }
+  }
+  message Stop {
+    required uint32 client_type = 1;
+    required string client_id = 2;
+  }
+}
+message P2PVoice {
+  message Start {
+    message Request {
+      required uint32 client_type = 1;
+      required string client_id = 2;
+    }
+    message Response {
+      required ErrorCode error_code = 1;
+    }
+  }
+  message Stop {
+    required uint32 client_type = 1;
+    required string client_id = 2;
+  }
+}
+message SnapshotRequest {
+  required string image_id = 1;
+  required string upload_uri = 2;
+  required string content_type = 3;
+}
+message SnapshotResponse {
+  required string image_id = 1;
+  required ErrorCode error_code = 2;
+  optional uint32 width = 3;
+  optional uint32 height = 4;
+}
+message LiveQuickReply {
+  optional string selected_type = 1;
+}
+message AppActionInfo {
+  optional AppActionType app_action_type = 1;
+  optional LiveQuickReply live_quick_reply = 2;
+}
+message WildlifeDetection {
+  message UploadRequest {
+    required string request_id = 1;
+  }
+  message UploadResponse {
+    required string request_id = 1;
+    required ErrorCode error_code = 2;
+    optional string upload_uri = 3;
+    optional string content_type = 4;
+  }
+  message UploadComplete {
+    required string request_id = 1;
+    required ErrorCode error_code = 2;
+  }
+  message Result {
+    required string request_id = 1;
+    required ErrorCode error_code = 2;
+    optional bool bear_detected = 3;
+    optional bool deer_detected = 4;
+  }
+}

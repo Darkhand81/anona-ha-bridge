@@ -1,0 +1,32 @@
+// smart_mass.proto  package=  deps=['nanopb.proto', 'smart_common.proto']
+message Mass {
+  enum MassID {
+    PREPARE = 0;
+    CONTROL = 1;
+  }
+  optional PrepareRequest prepare_request = 1; /*oneof payload*/
+  optional PrepareResponse prepare_response = 2; /*oneof payload*/
+  optional MassControl mass_control = 3; /*oneof payload*/
+}
+message PrepareRequest {
+  required uint32 data_type = 1;
+  required bytes data_id = 2;
+  required uint32 data_length = 3;
+  optional uint32 support_compress_mode = 4;
+}
+message PrepareResponse {
+  required bytes data_id = 1;
+  required PrepareStatus prepare_status = 2;
+  optional uint32 select_compress_mode = 3;
+  optional uint32 data_offset = 4;
+  optional uint32 expected_slice_length = 5;
+}
+message MassControl {
+  enum Op {
+    PAUSE = 1;
+    CANCEL = 2;
+  }
+  required MassControl.Op op = 1;
+  required uint32 data_type = 2;
+  required bytes data_id = 3;
+}

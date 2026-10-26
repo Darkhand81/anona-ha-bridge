@@ -1,0 +1,20 @@
+// smart_event.proto  package=  deps=['nanopb.proto']
+message Event {
+  message List {
+    repeated Event list = 1;
+  }
+  required string device_id = 1;
+  required uint32 event_id = 2;
+  repeated PropertyParam property_param_list = 3;
+  optional uint64 timestamp = 4;
+}
+message PropertyParam {
+  required uint32 property_id = 1;
+  optional string value_string = 2; /*oneof param*/
+  optional bytes value_bytes = 3; /*oneof param*/
+  optional uint32 value_uint32 = 4; /*oneof param*/
+  optional uint64 value_uint64 = 5; /*oneof param*/
+  optional sint32 value_int32 = 6; /*oneof param*/
+  optional float value_float = 7; /*oneof param*/
+  optional bool value_bool = 8; /*oneof param*/
+}

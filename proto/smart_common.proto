@@ -1,0 +1,136 @@
+// smart_common.proto  package=  deps=['nanopb.proto']
+enum ErrorCode {
+  NO_ERROR = 0;
+  NOT_SUPPORT = 1;
+  DEPENDENCY_NOT_READY = 2;
+  SET_FAILED = 3;
+  PARAM_ERROR = 4;
+  DELETE_FAILED = 5;
+  BUSY_IN_OTA = 6;
+  BUSY_IN_UPLOAD_LOG = 7;
+  BUSY_IN_VOICE_TALK = 8;
+  BUSY_IN_MOTOR_RUNNING = 9;
+  VIDEO_NOT_EXIST = 10;
+  UNKNOWN = 255;
+}
+enum PrepareStatus {
+  READY = 0;
+  BUSY = 1;
+  DUPLICATED = 2;
+  LOW_STORAGE = 3;
+  LOW_BATTERY = 4;
+  DOWNGRADE = 5;
+  OP_NOT_SUPPORT = 6;
+  FAILED = 255;
+}
+enum Sex {
+  NEUTRAL = 0;
+  MALE = 1;
+  FEMALE = 2;
+}
+enum CompressMode {
+  NO_COMPRESS = 0;
+}
+enum OptionalSwitcher {
+  NO_FEATURE = 0;
+  ON = 1;
+  OFF = 2;
+}
+enum TemperatureUnit {
+  NO_UNIT = 0;
+  CENTIGRADE = 1;
+  FAHRENHEIT = 2;
+}
+enum ClockMode {
+  CLOCK_ONCE = 0;
+  CLOCK_EVERY_DAY = 1;
+  CLOCK_WORKDAY = 2;
+  CLOCK_HOLIDAY = 3;
+  CLOCK_MONDAY_TO_FRIDAY = 4;
+  CLOCK_CUSTOM = 5;
+}
+enum AlgTag {
+  ALG_PEOPLE_APPEARED = 1;
+  ALG_PEOPLE_STAY_DETECTED = 2;
+  ALG_VEHICLE_APPEARED = 3;
+  ALG_PACKAGE_APPEARED = 4;
+  ALG_ANIMAL_APPEARED = 5;
+  ALG_MOVE_DETECTED = 6;
+  ALG_BABY_CRY_DETECTED = 7;
+  ALG_DOORBELL_IS_BLOCKED = 8;
+  ALG_PEOPLE_RINGING_DOORBELL = 9;
+  ALG_PACKAGE_MOVING = 10;
+  ALG_BEER_APPEARED = 11;
+  ALG_DEER_APPEARED = 12;
+  ALG_BEER_DEER_APPEARED = 13;
+}
+enum CODEC {
+  H264 = 1;
+  H265 = 2;
+  OPUS = 3;
+  AAC = 4;
+  G711A = 5;
+  PCM = 6;
+}
+enum ImageFormat {
+  JPEG = 1;
+}
+enum VideoResolution {
+  VR_480P = 1;
+  VR_720P = 2;
+  VR_1080P = 3;
+  VR_2K5 = 4;
+  VR_4K = 5;
+  VR_3K = 6;
+}
+message ClockHoliday {
+  required uint32 year = 1;
+  repeated string free_days = 2;
+  repeated string work_days = 3;
+}
+message GeneralDstPoint {
+  required uint32 year = 1;
+  required uint32 month = 2;
+  required sint32 week = 3;
+  required uint32 week_day = 4;
+  required uint32 hour = 5;
+  required uint32 minute = 6;
+}
+message Timezone {
+  required sint32 offset = 1;
+  optional uint32 dst_saving = 2;
+  optional string id = 3;
+  optional GeneralDstPoint dst_start = 4;
+  optional GeneralDstPoint dst_end = 5;
+}
+message Date {
+  required uint32 year = 1;
+  required uint32 month = 2;
+  required uint32 day = 3;
+}
+message Time {
+  required uint32 hour = 1;
+  required uint32 minuter = 2;
+  optional uint32 second = 3;
+  optional uint32 millisecond = 4;
+}
+message KeyValue {
+  required string key = 1;
+  required sint32 value = 2;
+}
+message KeyFloat {
+  required string key = 1;
+  required float value = 2;
+}
+message RangeValue {
+  required sint32 from = 1;
+  required sint32 to = 2;
+}
+message DatePeriod {
+  required uint64 start_date = 1;
+  required uint64 end_date = 2;
+}
+message TimePeriod {
+  required uint64 start_timestamp = 1;
+  required uint64 end_timestamp = 2;
+}

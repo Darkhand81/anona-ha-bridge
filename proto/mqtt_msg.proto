@@ -1,0 +1,22 @@
+// mqtt_msg.proto  package=  deps=['nanopb.proto']
+message MqttMsg {
+  enum TargetType {
+    SERVER = 0;
+    APP = 1;
+  }
+  enum SmartPacketType {
+    TYPE_PASSTHROUGH = 1;
+    TYPE_ENCRYPT = 2;
+    TYPE_AUTH = 3;
+  }
+  message Head_v1 {
+    required string id = 1;
+    required uint64 timestamp = 2;
+    optional bool hi = 3;
+    optional MqttMsg.TargetType target_type = 4;
+    optional bool filter_by_id = 5;
+  }
+  optional MqttMsg.Head_v1 head_v1 = 1; /*oneof head*/
+  optional MqttMsg.SmartPacketType smart_packet_type = 2;
+  optional bytes encode_smart_packet = 3;
+}

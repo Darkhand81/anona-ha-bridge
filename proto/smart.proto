@@ -1,0 +1,19 @@
+// smart.proto  package=  deps=['nanopb.proto', 'smart_common.proto', 'smart_authentication.proto', 'smart_system.proto', 'smart_mass.proto', 'smart_factory.proto', 'smart_ipcamera.proto']
+message Packet {
+  enum Type {
+    AUTHENTICATION = 1;
+    SYSTEM = 2;
+    MASS = 3;
+    FACTORY = 4;
+    DOOR_LOCK = 48;
+    IPCamera = 50;
+  }
+  required Packet.Type type = 1;
+  required uint32 id = 2;
+  optional Authentication authentication = 3; /*oneof payload*/
+  optional System system = 5; /*oneof payload*/
+  optional Mass mass = 6; /*oneof payload*/
+  optional Factory factory = 7; /*oneof payload*/
+  optional ErrorCode error_code = 49; /*oneof payload*/
+  optional IPCamera ipcamera = 52; /*oneof payload*/
+}

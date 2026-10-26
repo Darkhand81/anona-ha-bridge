@@ -1,0 +1,78 @@
+// smart_authentication.proto  package=  deps=['nanopb.proto']
+message Authentication {
+  enum AuthenticationID {
+    BIND_START = 1;
+    BIND_REQUEST = 2;
+    BIND_RESULT = 3;
+    AUTH_SYNC = 4;
+  }
+  optional BindInfo bind_info = 1; /*oneof payload*/
+  optional BindInfo.Request bind_info_request = 2; /*oneof payload*/
+  optional BindInfo.Response bind_info_response = 3; /*oneof payload*/
+  optional BindInfo.Result bind_info_result = 4; /*oneof payload*/
+  optional SyncInfo.Request sync_info_request = 5; /*oneof payload*/
+  optional SyncInfo.Response sync_info_response = 6; /*oneof payload*/
+  optional ErrorInfo error_info = 100; /*oneof payload*/
+}
+message ErrorInfo {
+  enum ErrorCode {
+    HAVE_BONDED = 1;
+    INFO_MISSING = 2;
+    VERIFY_FAIL = 3;
+    INTERNAL_ERROR = 4;
+    NO_BOND = 5;
+    USER_ID_NOT_MATCH = 6;
+    CRT_CREATE_FAIL = 7;
+    CRT_PARSE_FAIL = 8;
+    PARAM_ERROR = 9;
+  }
+  required ErrorInfo.ErrorCode error_code = 1;
+  optional string message = 2;
+}
+message BindInfo {
+  message Request {
+    required string bind_cert = 1;
+    optional uint64 user_id = 2;
+    optional string device_id = 3;
+  }
+  message Response {
+    required string signed_bind_cert = 1;
+    required string device_id = 2;
+    optional string ble_mac = 3;
+    optional string device_cert = 4;
+    optional string device_sn = 5;
+  }
+  message Result {
+    required string signed_bind_cert = 1;
+    required string ble_mac = 2;
+    required string device_cert = 3;
+  }
+  required string device_id = 1;
+  required bytes device_random = 2;
+  required uint64 device_channel = 3;
+  required string bind_cert = 4;
+  required string device_cert = 5;
+  optional string device_sn = 6;
+}
+message SyncInfo {
+  message Request {
+    required bytes companion_random = 1;
+    optional string companion_cert = 2;
+    optional CompanionDevice companion_device = 3;
+  }
+  message Response {
+    required bytes device_random = 1;
+  }
+}
+message CompanionDevice {
+  enum DeviceType {
+    INVALID = 0;
+    ANDROID_PHONE = 1;
+    IOS_PHONE = 2;
+    KEYBOARD = 3;
+    MQTT = 4;
+  }
+  required CompanionDevice.DeviceType device_type = 1;
+  optional float system_version = 2;
+  optional string device_name = 3;
+}

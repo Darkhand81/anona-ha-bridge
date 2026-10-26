@@ -1,0 +1,50 @@
+// nanopb.proto  package=  deps=['google/protobuf/descriptor.proto']
+enum FieldType {
+  FT_DEFAULT = 0;
+  FT_CALLBACK = 1;
+  FT_POINTER = 4;
+  FT_STATIC = 2;
+  FT_IGNORE = 3;
+  FT_INLINE = 5;
+}
+enum IntSize {
+  IS_DEFAULT = 0;
+  IS_8 = 8;
+  IS_16 = 16;
+  IS_32 = 32;
+  IS_64 = 64;
+}
+enum TypenameMangling {
+  M_NONE = 0;
+  M_STRIP_PACKAGE = 1;
+  M_FLATTEN = 2;
+}
+enum DescriptorSize {
+  DS_AUTO = 0;
+  DS_1 = 1;
+  DS_2 = 2;
+  DS_4 = 4;
+  DS_8 = 8;
+}
+message NanoPBOptions {
+  optional int32 max_size = 1;
+  optional int32 max_length = 14;
+  optional int32 max_count = 2;
+  optional IntSize int_size = 7;
+  optional FieldType type = 3;
+  optional bool long_names = 4;
+  optional bool packed_struct = 5;
+  optional bool packed_enum = 10;
+  optional bool skip_message = 6;
+  optional bool no_unions = 8;
+  optional uint32 msgid = 9;
+  optional bool anonymous_oneof = 11;
+  optional bool proto3 = 12;
+  optional bool enum_to_string = 13;
+  optional bool fixed_length = 15;
+  optional bool fixed_count = 16;
+  optional TypenameMangling mangle_names = 17;
+  optional string callback_datatype = 18;
+  optional string callback_function = 19;
+  optional DescriptorSize descriptorsize = 20;
+}

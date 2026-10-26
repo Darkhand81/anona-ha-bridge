@@ -1,0 +1,534 @@
+// smart_ipcamera_status.proto  package=  deps=['nanopb.proto', 'smart_system.proto', 'smart_common.proto']
+message IPCameraStatus {
+  message List {
+    repeated IPCameraStatus list = 1;
+  }
+  optional uint64 timestamp = 255;
+  optional DeviceStatus battery = 1;
+  optional LongEndurance long_endurance = 2;
+  optional P2PKeepConnection p2p_connection = 3;
+  optional CameraControl camera_sleep = 4;
+  optional CameraDisplay camera_display = 5;
+  optional NightVision night_vision = 6;
+  optional RecordingConfig recording_config = 7;
+  optional PrivacyArea privacy_area = 8;
+  optional AovConfig aov_config = 9;
+  optional AudioConfig audio_config = 10;
+  optional IndicatorLight indicator_light = 11;
+  optional WhiteLight white_light = 12;
+  optional SoundLight sound_light = 13;
+  optional ChargeConfig charge_config = 14;
+  optional DoorbellConfig doorbell_config = 15;
+  optional MotionDetection motion_detection = 20;
+  optional AiDetection ai_detection = 21;
+  optional DetectionAlarm detection_alarm = 22;
+  optional SoundDetection sound_detection = 23;
+  optional MemoryStorage memory_storage = 30;
+  optional BaseStationConfig base_station_config = 31;
+  optional MemoryStorageConfig memory_storage_config = 32;
+  optional OtherConfig other_config = 33;
+  optional bool low_temperature = 41;
+  optional bool high_temperature = 42;
+  optional int32 wifi_rssi = 46;
+  optional NetworkConnection network_connection = 47;
+  optional PanTiltPosition pan_tilt_position = 51;
+}
+message P2PKeepConnection {
+  message Request {
+    required uint32 duration_seconds = 1;
+    required string signaling_channel_name = 2;
+  }
+  message Response {
+    required string signaling_channel_name = 1;
+    required ErrorCode error_code = 2;
+  }
+  required uint32 connection_number = 43;
+}
+message ChargeConfig {
+  enum Mode {
+    USB = 1;
+    SOLAR = 2;
+    HARD_WIRED_CONNECTION = 3;
+    BATTERT_POWERED = 4;
+  }
+  required ChargeConfig.Mode mode = 1;
+}
+message DoorbellConfig {
+  enum Ringtone {
+    RINGTONE_1 = 1;
+    RINGTONE_2 = 2;
+    RINGTONE_3 = 3;
+  }
+  enum Volume {
+    VOLUME_0 = 1;
+    VOLUME_25 = 25;
+    VOLUME_50 = 50;
+    VOLUME_75 = 75;
+    VOLUME_100 = 100;
+  }
+  enum ReceiverType {
+    ANONA_RECEIVER = 1;
+    CABLE_RECEIVER = 2;
+    ALEXA_RECEIVER = 3;
+  }
+  enum CableReceiverType {
+    NO_SELECT_RECEIVER = 1;
+    MECHANICAL_RECEIVER = 2;
+    ELECTRONIC_RECEIVER = 3;
+  }
+  enum ReceiverRingingDuration {
+    SECOND_3 = 3;
+    SECOND_5 = 5;
+    SECOND_10 = 10;
+    SECOND_15 = 15;
+    SECOND_20 = 20;
+    SECOND_30 = 30;
+  }
+  message TimedNoDisturb {
+    message List {
+      repeated DoorbellConfig.TimedNoDisturb list = 1;
+    }
+    required bool on = 1;
+    required uint64 start_timestamp = 2;
+    required uint64 end_timestamp = 3;
+    optional uint32 week_days = 4;
+  }
+  message Receiver {
+    optional DoorbellConfig.ReceiverType receiver_type = 1;
+    optional DoorbellConfig.Ringtone ringtone = 2;
+    optional bool do_not_disturb_on = 3;
+    optional DoorbellConfig.TimedNoDisturb.List timed_no_disturb_list = 4;
+    optional DoorbellConfig.CableReceiverType cable_receiver_type = 5;
+    optional DoorbellConfig.ReceiverRingingDuration mech_receiver_ringing_duration = 6;
+    optional DoorbellConfig.ReceiverRingingDuration elec_receiver_ringing_duration = 7;
+    optional bool anona_receiver_enable = 8;
+    optional bool cable_receiver_enable = 9;
+  }
+  message TimeReply {
+    message List {
+      repeated DoorbellConfig.TimeReply list = 1;
+    }
+    required bool on = 1;
+    required uint64 start_timestamp = 2;
+    required uint64 end_timestamp = 3;
+    optional uint32 week_days = 4;
+  }
+  message CustomSound {
+    message List {
+      repeated DoorbellConfig.CustomSound list = 1;
+    }
+    optional string name = 1;
+    optional string index = 2;
+    optional string url = 3;
+  }
+  message AutoReplySound {
+    optional string selected_type = 1;
+    optional DoorbellConfig.CustomSound.List custom_sound_list = 2;
+  }
+  message AutoReply {
+    optional bool auto_reply_on = 1;
+    optional DoorbellConfig.AutoReplySound auto_reply_sound = 2;
+    optional DoorbellConfig.TimeReply.List time_reply_list = 3;
+  }
+  optional bool button_light_on = 1;
+  optional DoorbellConfig.Ringtone ringtone = 3;
+  optional DoorbellConfig.Volume volume = 4;
+  optional DoorbellConfig.Receiver receiver = 5;
+  optional DoorbellConfig.AutoReply auto_reply = 6;
+}
+message LongEndurance {
+  enum Mode {
+    OFF = 1;
+    ON = 2;
+    AUTO = 3;
+  }
+  required LongEndurance.Mode mode = 1;
+}
+message DisposablePrivacy {
+  required uint64 start_timestamp = 1;
+  required uint64 end_timestamp = 2;
+}
+message TimedPrivacy {
+  message List {
+    repeated TimedPrivacy list = 1;
+  }
+  required bool on = 1;
+  required uint64 start_timestamp = 2;
+  required uint64 end_timestamp = 3;
+  optional uint32 week_days = 4;
+}
+message CameraControl {
+  required bool sleep_enable = 1;
+  optional bool privacy_mode_on = 2;
+  optional DisposablePrivacy disposable_privacy = 3;
+  optional TimedPrivacy.List timed_privacy_list = 4;
+}
+message CameraDisplay {
+  enum ImageRolloverMode {
+    DEGREE_0 = 1;
+    DEGREE_90 = 2;
+    DEGREE_180 = 3;
+    DEGREE_270 = 4;
+  }
+  enum AntiFlickerMode {
+    OFF = 1;
+    HZ_50 = 2;
+    HZ_60 = 3;
+  }
+  optional bool time_watermark = 1;
+  optional bool logo_watermark = 2;
+  optional bool aberration_correction = 3;
+  optional bool hdr_mode = 4;
+  optional CameraDisplay.ImageRolloverMode image_rollover_mode = 5;
+  optional CameraDisplay.AntiFlickerMode anti_flicker_mode = 6;
+  optional bool flip_horizontal = 7;
+  optional bool flip_vertical = 8;
+}
+message NightVision {
+  enum Mode {
+    OFF = 0;
+    IR_MODE = 1;
+    WHITE_LIGHT_MODE = 2;
+    STARLIGHT_MODE = 3;
+    SMART_LIGHT_MODE = 4;
+  }
+  required NightVision.Mode mode = 1;
+  optional uint32 white_light_brightness = 2;
+  optional bool night_vision_on = 3;
+}
+message RecordingConfig {
+  enum MaxRecordingDuration {
+    SECOND_10 = 1;
+    SECOND_30 = 2;
+    SECOND_60 = 3;
+    SECOND_120 = 4;
+    SECOND_300 = 5;
+    SECOND_15 = 6;
+    SECOND_20 = 7;
+  }
+  enum MinRecordingInterval {
+    I_SECOND_0 = 1;
+    I_SECOND_5 = 2;
+    I_SECOND_10 = 3;
+    I_SECOND_15 = 4;
+    I_SECOND_20 = 5;
+    I_SECOND_30 = 6;
+    I_SECOND_60 = 7;
+  }
+  enum RecordingMode {
+    LONGER_RECORDING_MODE = 1;
+    BALANCED_RECORDING_MODE = 2;
+    LOW_ENERGY_RECORDING_MODE = 3;
+    CUSTOM_RECORDING_MODE = 4;
+  }
+  message RecordingItem {
+    optional RecordingConfig.MaxRecordingDuration max_recording_duration = 1;
+    optional RecordingConfig.MinRecordingInterval min_recording_interval = 2;
+  }
+  optional RecordingConfig.MaxRecordingDuration max_recording_duration = 1;
+  optional RecordingConfig.MinRecordingInterval min_recording_interval = 2;
+  optional VideoResolution video_resolution = 3;
+  optional RecordingConfig.RecordingMode recording_mode = 4;
+  optional RecordingConfig.RecordingItem custom_recording_item = 5;
+}
+message PrivacyArea {
+  enum BackgroundColorType {
+    BACKGROUND_COLOR_BLACK = 1;
+    BACKGROUND_COLOR_GRAY = 2;
+  }
+  required bool privacy_area_on = 1;
+  optional PrivacyArea.BackgroundColorType background_color_type = 2;
+  optional DetectionArea.List privacy_area_list = 3;
+  optional DetectionArea.List sub_privacy_area_list = 4;
+}
+message AovConfig {
+  enum Interval {
+    SECOND_3 = 1;
+    SECOND_5 = 2;
+    SECOND_10 = 3;
+    SECOND_30 = 4;
+    SECOND_60 = 5;
+    SECOND_300 = 6;
+    SECOND_1 = 7;
+    SECOND_2 = 8;
+  }
+  required bool on = 1;
+  optional VideoResolution video_resolution = 2;
+  optional AovConfig.Interval interval = 3;
+  optional DatePeriod date_period = 4;
+  optional TimePeriod time_period = 5;
+}
+message AudioConfig {
+  enum Volume {
+    LOW = 1;
+    MIDDLE = 2;
+    HIGH = 3;
+  }
+  required bool on = 1;
+  optional AudioConfig.Volume volume = 2;
+}
+message IndicatorLight {
+  required bool on = 1;
+}
+message WhiteLight {
+  required bool on = 1;
+}
+message SoundLight {
+  required bool on = 1;
+  optional uint64 start_timestamp = 2;
+}
+message RebootCamera {
+  required bool enable = 1;
+}
+message MotionDetection {
+  enum Sensitivity {
+    LOW = 1;
+    MIDDLE = 2;
+    HIGH = 3;
+  }
+  enum Extended_Sensitivity {
+    SHIFT_1 = 1;
+    SHIFT_2 = 2;
+    SHIFT_3 = 3;
+    SHIFT_4 = 4;
+    SHIFT_5 = 5;
+    SHIFT_6 = 6;
+    SHIFT_7 = 7;
+  }
+  enum Interval {
+    SECOND_0 = 1;
+    SECOND_10 = 2;
+    SECOND_30 = 3;
+    SECOND_60 = 4;
+    SECOND_180 = 5;
+  }
+  message TimedDetection {
+    message List {
+      repeated MotionDetection.TimedDetection list = 1;
+    }
+    required bool on = 1;
+    required uint64 start_timestamp = 2;
+    required uint64 end_timestamp = 3;
+    optional uint32 week_days = 4;
+  }
+  message SmartTracking {
+    optional bool people_on = 1;
+    optional bool pet_on = 2;
+  }
+  required bool detection_on = 1;
+  required MotionDetection.Sensitivity detection_sensitivity = 2;
+  optional MotionDetection.Interval detection_interval = 3;
+  optional MotionDetection.TimedDetection.List timed_detection_list = 4;
+  optional bool detection_area_on = 5;
+  optional DetectionArea.List detection_area_list = 6;
+  optional MotionDetection.Extended_Sensitivity extended_sensitivity = 7;
+  optional MotionDetection.SmartTracking smart_tracking = 8;
+  optional bool detection_frame_on = 9;
+  optional bool main_camera_occlusion_detection_on = 10;
+  optional bool sub_camera_occlusion_detection_on = 11;
+  optional DualCameraDetectionArea dual_camera_detection_area = 12;
+  optional bool detection_frame_on_ota = 13;
+}
+message AiDetection {
+  enum HumanDetectionMode {
+    DETECTED_IMMEDIATELY = 1;
+    DETECTED_FOR_3_SECOND_STAY = 2;
+    DETECTED_FOR_6_SECOND_STAY = 3;
+    DETECTED_FOR_9_SECOND_STAY = 4;
+  }
+  enum HumanDetectionNotification {
+    DETECTED_PEOPLE_APPEARED = 1;
+    DETECTED_PEOPLE_STAY = 2;
+  }
+  enum Sensitivity {
+    LOW = 1;
+    MIDDLE = 2;
+    HIGH = 3;
+  }
+  required bool people_detection_on = 1;
+  optional AiDetection.HumanDetectionMode people_detection_mode = 2;
+  optional bool vehicle_detection_on = 3;
+  optional bool package_detection_on = 4;
+  optional bool animal_detection_on = 5;
+  optional bool move_detection_on = 6;
+  optional AiDetection.Sensitivity people_detection_sensitivity = 7;
+  optional AiDetection.Sensitivity animal_detection_sensitivity = 8;
+  optional AiDetection.Sensitivity move_detection_sensitivity = 9;
+  optional AiDetection.HumanDetectionNotification people_detection_notification = 10;
+  optional bool people_stay_detection_on = 11;
+  optional bool beer_detection_on = 12;
+  optional bool deer_detection_on = 13;
+  optional bool beer_deer_detection_on = 14;
+}
+message DetectionAlarm {
+  enum MaxAlarmDuration {
+    SECONDS_30 = 1;
+    SECONDS_45 = 2;
+    SECONDS_60 = 3;
+    SECONDS_10 = 4;
+  }
+  message CustomSound {
+    message List {
+      repeated DetectionAlarm.CustomSound list = 1;
+    }
+    optional string name = 1;
+    optional string index = 2;
+    optional string url = 3;
+  }
+  message AlarmSound {
+    required string selected_type = 1;
+    optional DetectionAlarm.CustomSound.List custom_sound_list = 2;
+  }
+  message TimeAlarm {
+    message List {
+      repeated DetectionAlarm.TimeAlarm list = 1;
+    }
+    required bool on = 1;
+    required uint64 start_timestamp = 2;
+    required uint64 end_timestamp = 3;
+    optional uint32 week_days = 4;
+  }
+  required bool auto_sound_and_light_warning = 1;
+  required bool people_detection_on = 2;
+  optional bool vehicle_detection_on = 3;
+  optional bool package_detection_on = 4;
+  optional bool animal_detection_on = 5;
+  optional bool move_detection_on = 6;
+  optional DetectionAlarm.MaxAlarmDuration people_max_alarm_duration = 7;
+  optional DetectionAlarm.MaxAlarmDuration animal_max_alarm_duration = 8;
+  optional DetectionAlarm.AlarmSound people_alarm_sound = 9;
+  optional DetectionAlarm.AlarmSound animal_alarm_sound = 10;
+  optional DetectionAlarm.TimeAlarm.List time_alarm_list = 11;
+  optional uint32 volume = 12;
+}
+message SoundDetection {
+  enum Sensitivity {
+    LOW = 1;
+    MIDDLE = 2;
+    HIGH = 3;
+  }
+  message TimedDetection {
+    message List {
+      repeated SoundDetection.TimedDetection list = 1;
+    }
+    required bool on = 1;
+    required uint64 start_timestamp = 2;
+    required uint64 end_timestamp = 3;
+    optional uint32 week_days = 4;
+  }
+  optional bool sound_detection_on = 1;
+  optional bool baby_cry_on = 2;
+  optional SoundDetection.Sensitivity baby_cry_sensitivity = 3;
+  optional SoundDetection.TimedDetection.List timed_detection_list = 4;
+}
+message MemoryStorageConfig {
+  enum RecordingMode {
+    EVENT_RECORDING = 1;
+    FULL_TIME_RECORDING = 2;
+  }
+  enum ExtraRecordingDuration {
+    SECONDS_5 = 5;
+    SECONDS_10 = 10;
+    SECONDS_30 = 30;
+  }
+  optional MemoryStorageConfig.RecordingMode recording_mode = 1;
+  optional MemoryStorageConfig.ExtraRecordingDuration extra_recording_duration = 2;
+}
+message MemoryStorage {
+  enum TYPE {
+    INTERNAL = 1;
+    EXTERNAL = 2;
+  }
+  enum Status {
+    NORMAL = 0;
+    FORMATTING = 1;
+    ERROR = 2;
+    SD_NON_EXISTENT = 3;
+    SD_EJECTED = 4;
+    LOW_CAPACITY = 5;
+    LOW_CLASS_LEVEL = 6;
+    FORMAT_NOT_COMPATIBILITY = 7;
+    SLOW_WRITE_SPEED = 8;
+    HIGH_CAPACITY = 9;
+    TOO_MANY_FRAGMENTED_FILES = 10;
+    NON_OWNER_FILES_DETECTED = 11;
+    NON_SYSTEM_GENERATED_FILES = 12;
+    CLEARING_LOCAL_STORAGE = 13;
+  }
+  required MemoryStorage.TYPE type = 1;
+  required MemoryStorage.Status status = 2;
+  required uint32 total_space = 3;
+  required uint32 free_space = 4;
+  required uint32 used_space = 5;
+  optional bool local_storage_on = 6;
+  optional uint32 system_used_space = 7;
+}
+message BaseStationConfig {
+  optional bool enable = 1;
+  optional bool remote_storage_on = 2;
+  optional string model = 3;
+  optional string device_type = 4;
+  optional string device_module = 5;
+  optional string device_id = 6;
+}
+message DetectionArea {
+  message List {
+    repeated DetectionArea list = 1;
+  }
+  required uint32 point1_x = 1;
+  required uint32 point1_y = 2;
+  required uint32 point2_x = 3;
+  required uint32 point2_y = 4;
+  required uint32 point3_x = 5;
+  required uint32 point3_y = 6;
+  required uint32 point4_x = 7;
+  required uint32 point4_y = 8;
+}
+message DualCameraDetectionArea {
+  enum DetectionAreaMethod {
+    ALL = 1;
+    SINGLE = 2;
+  }
+  optional DualCameraDetectionArea.DetectionAreaMethod detection_area_method_main_image = 1;
+  optional DualCameraDetectionArea.DetectionAreaMethod detection_area_method_sub_image = 2;
+  optional DetectionArea detection_area_all_main_image = 3;
+  optional DetectionArea detection_area_all_sub_image = 4;
+  optional DetectionArea detection_area_single_main_image_people = 5;
+  optional DetectionArea detection_area_single_sub_image_people = 6;
+  optional DetectionArea detection_area_single_main_image_pet = 7;
+  optional DetectionArea detection_area_single_sub_image_pet = 8;
+  optional DetectionArea detection_area_single_main_image_package = 9;
+  optional DetectionArea detection_area_single_sub_image_package = 10;
+}
+message TimeConfig {
+  optional bool is_24_hours_on = 1;
+}
+message WakeupConfig {
+  enum Method {
+    AFTER_DETECTION = 1;
+    AFTER_RINGING_THE_BELL = 2;
+    OPEN_THROUGHOUT_THE_DAY = 3;
+  }
+  optional WakeupConfig.Method method = 1;
+}
+message OtherConfig {
+  optional TimeConfig time_config = 1;
+  optional WakeupConfig wakeup_config = 2;
+}
+message PanTiltPosition {
+  message Position {
+    required int32 horizontal = 1;
+    required int32 vertical = 2;
+  }
+  optional PanTiltPosition.Position current_position = 1;
+  optional PanTiltPosition.Position target_position = 2;
+  optional bool motor_calibration_pending = 3;
+}
+message NetworkConnection {
+  enum Type {
+    NET_NONE = 0;
+    NET_WIFI = 1;
+    NET_ETHERNET = 2;
+  }
+  required NetworkConnection.Type type = 1;
+}

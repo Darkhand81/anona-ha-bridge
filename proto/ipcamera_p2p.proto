@@ -1,0 +1,333 @@
+// ipcamera_p2p.proto  package=  deps=['nanopb.proto']
+enum P2P_RESOLUTION {
+  RESOLUTION_AUTO = 1;
+  RESOLUTION_2560_1440 = 2;
+  RESOLUTION_1280_720 = 3;
+  RESOLUTION_864_480 = 4;
+  RESOLUTION_3840_2160 = 5;
+  RESOLUTION_1920_1080 = 6;
+}
+enum P2P_CODEC {
+  P2P_CODEC_H264 = 1;
+  P2P_CODEC_H265 = 2;
+  P2P_CODEC_OPUS = 3;
+  P2P_CODEC_AAC = 4;
+}
+enum P2P_ErrorCode {
+  P2P_NO_ERROR = 0;
+  P2P_NOT_SUPPORT = 1;
+  P2P_NOT_EXIST = 2;
+  P2P_BUSY = 3;
+  P2P_EOF = 4;
+  P2P_UNKNOWN = 255;
+}
+message IPCameraP2P {
+  enum IPCameraP2PID {
+    GET_LOCAL_FILELIST = 1;
+    DELETE_FILES = 2;
+    DOWNLOAD = 3;
+    START_LIVE_STREAM = 4;
+    STOP_LIVE_STREAM = 5;
+    SUGGEST_RESOLUTION = 6;
+    START_PLAYBACK = 7;
+    STOP_PLAYBACK = 8;
+    PAUSE_PLAYBACK = 9;
+    RESUME_PLAYBACK = 10;
+    SEEK_PLAYBACK = 11;
+    REPORT_END_OF_FILE = 12;
+    START_VOICE = 13;
+    STOP_VOICE = 14;
+    PREPARE_PLAYBACK = 15;
+    PLAYBACK_STATUS = 16;
+    PLAYBACK_SPEED = 17;
+    PLAYBACK_REPORT_BUF_INFO = 18;
+    AOV_GET_SEGMENT_LIST = 30;
+    AOV_START_PLAYBACK = 31;
+    AOV_STOP_PLAYBACK = 32;
+    AOV_PAUSE_PLAYBACK = 33;
+    AOV_RESUME_PLAYBACK = 34;
+    AOV_SEEK_PLAYBACK = 35;
+    REPORT_AOV_PLAYBACK_STATUS = 36;
+    AOV_DELETE_SEGMENTS = 37;
+  }
+  optional LocalFile.List localfile_list = 2; /*oneof payload*/
+  optional LocalFile.Request localFile_request = 80; /*oneof payload*/
+  optional DeleteFile.List deletefile_list = 3; /*oneof payload*/
+  optional Download.Request download_request = 4; /*oneof payload*/
+  optional Download.Response download_response = 5; /*oneof payload*/
+  optional Download.Start download_start = 6; /*oneof payload*/
+  optional Download.Stop download_stop = 7; /*oneof payload*/
+  optional Download.Status download_status = 60; /*oneof payload*/
+  optional LiveStreamStart.Request live_stream_start_request = 8; /*oneof payload*/
+  optional LiveStreamStart.Response live_stream_start_response = 9; /*oneof payload*/
+  optional SuggestResolution suggest_resulotion = 10; /*oneof payload*/
+  optional StartPlayback.Request start_playback_request = 11; /*oneof payload*/
+  optional StartPlayback.Response start_playback_response = 12; /*oneof payload*/
+  optional SeekPlayback.Request seek_playback_request = 13; /*oneof payload*/
+  optional SeekPlayback.Response seek_playback_response = 14; /*oneof payload*/
+  optional StopPlayback.Response stop_playback_response = 15; /*oneof payload*/
+  optional ResumePlayback.Request resume_playback_response = 16; /*oneof payload*/
+  optional StartVoice.Request start_voice_request = 17; /*oneof payload*/
+  optional StartVoice.Response start_voice_response = 18; /*oneof payload*/
+  optional StopVoice.Request stop_voice_request = 19; /*oneof payload*/
+  optional PreparePlayback.Request prepare_playback_request = 20; /*oneof payload*/
+  optional PreparePlayback.Response prepare_playback_response = 21; /*oneof payload*/
+  optional DeleteFile.Response deletefile_response = 22; /*oneof payload*/
+  optional Playback.Status playback_status = 23; /*oneof payload*/
+  optional Playback.FileEnd playback_file_end = 24; /*oneof payload*/
+  optional Playback.SpeedRequest playback_speed_request = 25; /*oneof payload*/
+  optional Playback.SpeedResponse playback_speed_response = 26; /*oneof payload*/
+  optional Playback.BufferUsedInfoReport playback_bufferUsed_info_report = 27; /*oneof payload*/
+  optional Playback.BufferUsedInfoResponse playback_bufferUsed_info_response = 28; /*oneof payload*/
+  optional AovGetSegmentList.Request aov_get_segment_list_request = 30; /*oneof payload*/
+  optional AovGetSegmentList.Response aov_get_segment_list_response = 31; /*oneof payload*/
+  optional AovStartPlayback.Request aov_start_playback_request = 32; /*oneof payload*/
+  optional AovStartPlayback.Response aov_start_playback_response = 33; /*oneof payload*/
+  optional AovResumePlayback.Request aov_resume_playback_request = 34; /*oneof payload*/
+  optional AovSeekPlayback.Request aov_seek_playback_request = 35; /*oneof payload*/
+  optional AovSeekPlayback.Response aov_seek_playback_response = 36; /*oneof payload*/
+  optional AovPlaybackStatus aov_playback_status = 37; /*oneof payload*/
+  optional AovDeleteSegments.Request aov_delete_segments_request = 38; /*oneof payload*/
+  optional AovDeleteSegments.Response aov_delete_segments_response = 39; /*oneof payload*/
+  required IPCameraP2P.IPCameraP2PID id = 1;
+}
+message PreparePlayback {
+  message Request {
+    required string file = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+  }
+}
+message StartPlayback {
+  message Request {
+    required string file = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+    required uint32 duration_second = 2;
+  }
+}
+message StopPlayback {
+  message Response {
+    required P2P_ErrorCode error = 1;
+  }
+}
+message ResumePlayback {
+  message Request {
+    required uint32 paused_position_second = 1;
+  }
+}
+message SeekPlayback {
+  message Request {
+    required uint32 position_second = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+    required uint32 position_second = 2;
+  }
+}
+message Playback {
+  enum Type {
+    ENTER = 1;
+    EXIT = 2;
+  }
+  enum SpeedType {
+    SLOW = 0;
+    NORMAL = 1;
+    FAST = 2;
+  }
+  enum BufferUsedInfo {
+    USED_LESS = 0;
+    USED_NORMAL = 1;
+    USED_FULL = 2;
+  }
+  message Status {
+    required Playback.Type type = 1;
+  }
+  message FileEnd {
+    required string file = 1;
+  }
+  message SpeedRequest {
+    required Playback.SpeedType speed = 1;
+  }
+  message SpeedResponse {
+    required P2P_ErrorCode error = 1;
+  }
+  message BufferUsedInfoReport {
+    required Playback.BufferUsedInfo status = 1;
+  }
+  message BufferUsedInfoResponse {
+    required P2P_ErrorCode error = 1;
+  }
+}
+message EventTag {
+  enum AlgTag {
+    ALG_PEOPLE_APPEARED = 1;
+    ALG_PEOPLE_STAY_DETECTED = 2;
+    ALG_VEHICLE_APPEARED = 3;
+    ALG_PACKAGE_APPEARED = 4;
+    ALG_ANIMAL_APPEARED = 5;
+    ALG_MOVE_DETECTED = 6;
+  }
+  required EventTag.AlgTag tag = 1;
+  required uint64 timestamp = 2;
+}
+message LocalFile {
+  enum FILE_TYPE {
+    NORMAL = 1;
+    AOV = 2;
+  }
+  message Request {
+    required uint64 start_time = 1;
+    required uint64 end_time = 2;
+    required uint64 identifier_id = 3;
+    optional uint64 last_uploaded_time = 4;
+    optional uint32 count = 5;
+  }
+  message List {
+    repeated LocalFile list = 1;
+    optional uint64 last_uploaded_time = 2;
+    optional uint64 identifier_id = 3;
+  }
+  required LocalFile.FILE_TYPE type = 1;
+  required string file = 2;
+  required uint64 time = 3;
+  required uint32 duration = 4;
+  required uint32 fps = 5;
+  required uint32 aov_interval = 6;
+  repeated EventTag tag_list = 7;
+}
+message DeleteFile {
+  message List {
+    repeated DeleteFile list = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+  }
+  required string file = 1;
+}
+message Download {
+  enum Type {
+    video = 1;
+    thumbnail = 2;
+    aov_video = 3;
+    aov_thumbnail = 4;
+  }
+  message Request {
+    required Download.Type type = 1;
+    required string file = 2;
+    required uint64 data_id = 3;
+    required uint64 aov_segment_timestamp = 4;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+    required uint32 total_size = 2;
+    required uint32 slice_size = 3;
+    required uint64 data_id = 4;
+    optional P2P_CODEC video_codec = 5;
+    optional P2P_CODEC audio_codec = 6;
+    optional uint32 total_count = 7;
+  }
+  message Start {
+    required uint64 data_id = 1;
+  }
+  message Stop {
+    required uint64 data_id = 1;
+  }
+  message Status {
+    required P2P_ErrorCode error = 1;
+  }
+}
+message LiveStreamStart {
+  message Request {
+    required P2P_RESOLUTION resolution = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error_code = 1;
+    required P2P_CODEC video_codec = 2;
+    required P2P_CODEC audio_codec = 3;
+  }
+}
+message SuggestResolution {
+  required P2P_RESOLUTION resolution = 1;
+}
+message FrameInfo {
+  required P2P_CODEC codec = 1;
+  required uint64 timestamp = 2;
+  required bool is_key_frame = 3;
+  required uint32 seq_no = 4;
+  required uint32 data_size = 5;
+}
+message MassData {
+  required uint64 data_id = 1;
+  required int32 data_size = 2;
+  required bytes data_buffer = 3;
+  optional FrameInfo frame_info = 4;
+}
+message StartVoice {
+  message Request {
+  }
+  message Response {
+    required P2P_ErrorCode error_code = 1;
+  }
+}
+message StopVoice {
+  message Request {
+  }
+}
+message AovSegment {
+  message List {
+    repeated AovSegment list = 1;
+  }
+  required uint64 timestamp_first_I = 1;
+  required uint64 duration = 2;
+  required uint32 duration_playback_second = 3;
+}
+message AovGetSegmentList {
+  message Request {
+    required uint64 timestamp = 1;
+    required uint32 duration_second = 2;
+    optional uint64 identifier_id = 3;
+    optional uint64 last_uploaded_time = 4;
+  }
+  message Response {
+    required AovSegment.List segment_list = 1;
+    optional uint64 last_uploaded_time = 2;
+    optional uint64 identifier_id = 3;
+  }
+}
+message AovStartPlayback {
+  message Request {
+    required uint64 timestamp_first_I = 1;
+    required uint64 duration = 2;
+  }
+  message Response {
+    required P2P_ErrorCode error_code = 1;
+  }
+}
+message AovResumePlayback {
+  message Request {
+    required uint64 last_played_timestamp = 1;
+  }
+}
+message AovSeekPlayback {
+  message Request {
+    required uint32 position_ms = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+    required uint32 position_ms = 2;
+  }
+}
+message AovPlaybackStatus {
+  required P2P_ErrorCode error = 1;
+}
+message AovDeleteSegments {
+  message Request {
+    repeated uint64 timestamp = 1;
+  }
+  message Response {
+    required P2P_ErrorCode error = 1;
+  }
+}

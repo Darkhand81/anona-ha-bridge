@@ -1,0 +1,358 @@
+// smart_system.proto  package=  deps=['nanopb.proto', 'smart_common.proto']
+enum ResetMode {
+  NO_ERASE = 0;
+  ERASE_ALL = 1;
+}
+message System {
+  enum SystemID {
+    RESET = 0;
+    GET_DEVICE_STATUS = 1;
+    GET_DEVICE_INFO = 2;
+    SET_SYSTEM_TIME = 3;
+    SET_LANGUAGE = 4;
+    OTA_START = 9;
+    OTA_REQUEST = 10;
+    SET_NETWORK_CONFIG = 16;
+    GET_WIFI_CAPABILITY = 18;
+    START_WIFI_SCAN = 19;
+    STOP_WIFI_SCAN = 20;
+    SET_WIFI_CONFIG = 21;
+    REPORT_WIFI_SCAN_RECORD = 22;
+    REPORT_WIFI_CONNECT_RESULT = 23;
+    GET_WIFI_SCAN_RECORD = 24;
+    MQTT_ACCESS = 25;
+    GET_AP_INFO = 26;
+    GET_QUIET_MODE = 32;
+    SET_QUIET_MODE = 33;
+    QUIET_MODE_CHANGE = 34;
+    SET_UNIT_SETTING = 35;
+    SET_UNIT_SETTING_LIST = 36;
+    GET_UNIT_SETTING_LIST = 37;
+    GET_MATTER_FABRICS = 48;
+    START_MATTER_COMMISSIONING = 49;
+    DELETE_MATTER_FABRIC = 50;
+    DELETE_MATTER_ALL_FABRICS = 51;
+    SET_MATTER_PINCODE = 52;
+    SYNC_ASSOCIATED_DEVICE_INFO = 64;
+    REPORT_DATA = 80;
+    REPORT_DATA_RESULT = 81;
+    GET_LOG_UPLOAD_INFO = 82;
+    GET_LOG_UPLOAD_INFO_RESULT = 83;
+  }
+  optional ResetMode reset_mode = 1; /*oneof payload*/
+  optional DeviceStatus device_status = 2; /*oneof payload*/
+  optional DeviceInfo device_info = 3; /*oneof payload*/
+  optional SystemTime system_time = 4; /*oneof payload*/
+  optional Language language = 5; /*oneof payload*/
+  optional Ota.Start ota_start = 10; /*oneof payload*/
+  optional Ota.Request ota_request = 11; /*oneof payload*/
+  optional Ota.Start.Result ota_start_result = 12; /*oneof payload*/
+  optional NetworkConfig network_config = 16; /*oneof payload*/
+  optional WiFiConfig.Capability wifi_capability = 19; /*oneof payload*/
+  optional WiFiConfig wifi_config = 20; /*oneof payload*/
+  optional WiFiConfig.Result wifi_config_result = 21; /*oneof payload*/
+  optional WiFiConfig.ScanRecord wifi_scan_record = 22; /*oneof payload*/
+  optional WiFiConfig.ScanRecord.List wifi_scan_record_list = 23; /*oneof payload*/
+  optional WiFiConfig.ConnectResult wifi_connect_result = 24; /*oneof payload*/
+  optional MqttAccess.AuthInfo mqtt_access_auth_info = 27; /*oneof payload*/
+  optional MqttAccess.BrokerInfo mqtt_access_broker_info = 28; /*oneof payload*/
+  optional QuietMode quiet_mode = 32; /*oneof payload*/
+  optional UnitSetting unit_setting = 33; /*oneof payload*/
+  optional UnitSetting.List unit_setting_list = 34; /*oneof payload*/
+  optional MatterConfig.FabricInfo matter_fabric_info = 48; /*oneof payload*/
+  optional MatterConfig.FabricInfo.List matter_fabric_info_list = 49; /*oneof payload*/
+  optional MatterConfig.CommissioningInfo matter_commissioning_info = 50; /*oneof payload*/
+  optional MatterConfig.PinCode pincode = 51; /*oneof payload*/
+  optional AssociatedDeviceInfo.List associated_device_info_list = 60; /*oneof payload*/
+  optional ReportData report_data = 80; /*oneof payload*/
+  optional ReportData.Result report_data_result = 81; /*oneof payload*/
+  optional GetLogUploadInfo get_log_upload_info = 82; /*oneof payload*/
+  optional GetLogUploadInfo.Result get_log_upload_info_result = 83; /*oneof payload*/
+}
+message DeviceStatus {
+  message Battery {
+    enum ChargeStatus {
+      UNKNOWN = 0;
+      CHARGING = 1;
+      NOT_CHARGING = 2;
+      FULL = 3;
+    }
+    enum LowBatteryStatus {
+      LOW = 1;
+      ULTRA_LOW = 2;
+      LOW_5 = 3;
+    }
+    enum LowVoltageWarning {
+      ABNORMAL = 1;
+    }
+    enum LongEnduranceModeStatus {
+      OFF = 1;
+      ON = 2;
+    }
+    enum TemperatureStatus {
+      NOT_HIGH = 1;
+      HIGH = 2;
+    }
+    required uint32 capacity = 1;
+    optional DeviceStatus.Battery.ChargeStatus charge_status = 2;
+    optional DeviceStatus.Battery.LowBatteryStatus low_battery_status = 3;
+    optional DeviceStatus.Battery.LowVoltageWarning low_voltage_warning = 4;
+    optional DeviceStatus.Battery.LowBatteryStatus low_battery_display = 5;
+    optional DeviceStatus.Battery.LongEnduranceModeStatus long_endurance_mode_status = 6;
+    optional int32 temperature = 7;
+    optional DeviceStatus.Battery.TemperatureStatus temperature_status = 8;
+  }
+  message ChargingStatistics {
+    required uint32 rated_battery_capacity = 1;
+    required uint32 charging_capacity = 2;
+    optional uint32 charging_duration = 3;
+    optional uint32 battery_voltage = 4;
+  }
+  required DeviceStatus.Battery battery = 1;
+  optional DeviceStatus.ChargingStatistics charging_statistics = 2;
+}
+message DeviceInfo {
+  required string serial_number = 1;
+  required string firmware_version = 2;
+  optional string model = 3;
+  optional string device_type = 4;
+  optional string device_module = 5;
+  optional string device_channel = 6;
+  optional string device_id = 7;
+  optional string ble_mac = 8;
+  optional string wifi_mac = 9;
+  optional string ip = 10;
+  optional string wifi_ap_ssid = 11;
+  optional uint64 reboot_timestamp = 12;
+}
+message SystemTime {
+  required Date date = 1;
+  required Time time = 2;
+  optional Timezone time_zone = 3;
+  optional bool is_12_hours = 4;
+  optional string time_zone_name = 5;
+}
+message Language {
+  required string locale = 1;
+}
+message NightMode {
+  enum Mode {
+    OFF = 1;
+    SUNSET_ON = 2;
+    TIMING_ON = 3;
+  }
+  required NightMode.Mode mode = 1;
+  optional Time start_time = 2;
+  optional Time end_time = 3;
+}
+message Ota {
+  enum Type {
+    ALL = 0;
+    ROM = 1;
+    RES = 2;
+  }
+  enum Code {
+    OTA_START = 0;
+    DOWNLOAD_START = 1;
+    DOWNLOAD_PROGRESS = 8;
+    DOWNLOAD_ERROR = 2;
+    DOWNLOAD_FINISH = 3;
+    UPDATE_START = 4;
+    DEVICE_BUSY = 5;
+    LOW_BATTERY = 6;
+    STATE_NOT_SUPPORT = 7;
+    DEVICE_BUSY_IN_OTA = 9;
+  }
+  message Start {
+    message Result {
+      required Ota.Code code = 1;
+    }
+    required bool force = 1;
+    required Ota.Type type = 2;
+    required string firmware_version = 3;
+    optional string url = 4;
+    optional string file_md5 = 5;
+    optional uint32 data_length = 6;
+    optional bool silent = 7;
+  }
+  message Request {
+    required Ota.Code code = 1;
+    optional string target_firmware_version = 2;
+    optional string current_firmware_version = 3;
+    optional uint32 progress = 4;
+  }
+}
+message NetworkConfigExtend {
+  message List {
+    repeated NetworkConfigExtend list = 1;
+  }
+  required string host = 1;
+  optional string cert_type = 2;
+}
+message NetworkConfig {
+  required string host = 1;
+  optional string country_code = 2;
+  optional string cert_type = 3;
+  optional NetworkConfigExtend.List network_config_extend_list = 4;
+}
+message WiFiConfig {
+  enum AuthMode {
+    AUTHMODE_OPEN = 1;
+    AUTHMODE_WEP = 2;
+    AUTHMODE_WPA_PSK = 4;
+    AUTHMODE_WPA2_PSK = 8;
+    AUTHMODE_WPA2_PSK_SHA256 = 16;
+    AUTHMODE_WPA2_EAP = 32;
+    AUTHMODE_WPA3_PSK = 64;
+    AUTHMODE_WPA3_EAP = 128;
+  }
+  enum Frequency {
+    F_24G = 1;
+    F_5G = 2;
+  }
+  enum ConnectionState {
+    DISCONNECTED = 1;
+    CONNECTING = 2;
+    CONNECTED = 3;
+  }
+  message Capability {
+    optional uint32 support_auth_mode = 1;
+    optional uint32 support_frequency = 2;
+  }
+  message BasicInfo {
+    required string ssid = 1;
+    optional WiFiConfig.AuthMode auth_mode = 2;
+    optional WiFiConfig.Frequency frequency = 3;
+  }
+  message ScanRecord {
+    message List {
+      repeated WiFiConfig.ScanRecord list = 1;
+    }
+    required WiFiConfig.BasicInfo basic_info = 1;
+    optional int32 rssi = 2;
+  }
+  message PSKInfo {
+    required string password = 1;
+  }
+  message EAPInfo {
+    required string identity = 1;
+    required string password = 2;
+  }
+  message Result {
+    required ErrorCode error_code = 1;
+  }
+  message ConnectResult {
+    required WiFiConfig.ConnectionState connection_state = 1;
+  }
+  required WiFiConfig.BasicInfo basic_info = 1;
+  optional WiFiConfig.PSKInfo psk_info = 2;
+  optional WiFiConfig.EAPInfo eap_info = 3;
+}
+message MqttAccess {
+  enum IPType {
+    IP_V4 = 1;
+    IP_V6 = 2;
+  }
+  message AuthInfo {
+    required string device_id = 1;
+    required string device_cert = 2;
+    required uint64 device_channel = 3;
+  }
+  message BrokerInfo {
+    required MqttAccess.IPType ip_type = 1;
+    required string ip_address = 2;
+    optional uint32 port = 3;
+  }
+}
+message QuietMode {
+  required bool enable = 1;
+  optional bool timed_enable = 2;
+  optional uint64 start_timestamp = 3;
+  optional uint64 end_timestamp = 4;
+}
+message UnitSetting {
+  enum Type {
+    DISTANCE = 0;
+    SPEED = 1;
+    WEIGHT = 2;
+  }
+  enum Unit {
+    METRIC = 0;
+    IMPERIAL = 1;
+  }
+  message List {
+    repeated UnitSetting list = 1;
+  }
+  required UnitSetting.Type type = 1;
+  required UnitSetting.Unit unit = 2;
+}
+message MatterConfig {
+  message FabricInfo {
+    message List {
+      repeated MatterConfig.FabricInfo list = 1;
+    }
+    required string id = 1;
+    optional string name = 2;
+    optional string label = 3;
+  }
+  message CommissioningInfo {
+    required string qr_code = 1;
+    required string manual_pairing_code = 2;
+  }
+  message PinCode {
+    required string pincode = 1;
+  }
+}
+message AssociatedDeviceInfo {
+  message List {
+    repeated AssociatedDeviceInfo list = 1;
+  }
+  optional string device_id = 1;
+  optional string model = 2;
+  optional string device_type = 3;
+  optional string device_module = 4;
+}
+message ReportData {
+  enum Type {
+    DEVICE_LOG = 1;
+    STATISTICS = 2;
+    DUMP_LOG = 3;
+  }
+  enum Status {
+    SUCCESS = 0;
+    NO_DATA = 1;
+    URL_DIRECT = 2;
+    BUSY = 3;
+    UPLOAD_START = 4;
+    FAIL = 10;
+  }
+  message IpInfo {
+    message List {
+      repeated ReportData.IpInfo list = 1;
+    }
+    optional string ip = 1;
+  }
+  message Result {
+    required ReportData.Type type = 1;
+    required ReportData.Status status = 2;
+  }
+  required ReportData.Type type = 1;
+  optional string id = 2;
+  optional bool net_diagnostics_on = 3;
+  optional ReportData.IpInfo.List ip_info_list = 4;
+}
+message GetLogUploadInfo {
+  enum Status {
+    SUCCESS = 0;
+    FAIL = 1;
+  }
+  message Result {
+    required string upload_pre_signed_url = 1;
+    required GetLogUploadInfo.Status status = 2;
+  }
+  required string upload_key = 1;
+  required string local_file_name = 2;
+  optional string content_type = 3;
+  required uint32 multi_party_seq = 4;
+  required bool all_done = 5;
+}

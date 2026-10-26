@@ -1,0 +1,28 @@
+// smart_factory.proto  package=  deps=['nanopb.proto']
+enum FactoryMode {
+  USER = 0;
+  USERDEBUG = 1;
+  ENG = 2;
+}
+message Factory {
+  enum FactoryID {
+    SET_MODE = 0;
+    GET_MODE = 1;
+    DUMP_FILE = 2;
+    APP_COMMAND = 3;
+  }
+  optional FactoryMode mode = 1; /*oneof payload*/
+  optional FileInfo file = 3; /*oneof payload*/
+  optional AppCommand app_command = 4; /*oneof payload*/
+}
+message FileInfo {
+  required string name = 1;
+  required bool is_append = 2;
+  required bytes data = 3;
+}
+message AppCommand {
+  enum Action {
+    TRIGGER_EVENT = 1;
+  }
+  optional AppCommand.Action action = 1;
+}

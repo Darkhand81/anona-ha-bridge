@@ -1,0 +1,45 @@
+name: Anona Pano Bridge
+version: "0.1.0"
+slug: anona_bridge
+description: >-
+  Bridge 70mai Anona Pano cameras to Home Assistant — live RTSP (for go2rtc),
+  MQTT discovery (PTZ, switches, sensors, motion/AI events) and two-way talkback.
+url: https://github.com/Darkhand81/anona-ha-bridge
+# The bridge makes outbound WebRTC (ICE/TURN) P2P connections to the cameras on
+# the LAN, and serves RTSP on the host. Host networking matches the proven setup
+# (host ICE candidates = LAN IP) and exposes RTSP :8554 / talkback :8080 directly.
+host_network: true
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armv7
+# Pull MQTT broker credentials from the Mosquitto add-on automatically when the
+# mqtt_url option is left blank.
+services:
+  - mqtt:want
+options:
+  email: ""
+  password: ""
+  region: INTL
+  devices: []
+  mqtt_url: ""
+  mqtt_user: ""
+  mqtt_password: ""
+  has_battery: false
+  token_refresh: "6h"
+  rtsp_listen: ":8554"
+  http_listen: ":8080"
+schema:
+  email: email
+  password: password
+  region: list(INTL|EU|OTHERS)
+  devices:
+    - str
+  mqtt_url: str?
+  mqtt_user: str?
+  mqtt_password: password?
+  has_battery: bool?
+  token_refresh: str?
+  rtsp_listen: str?
+  http_listen: str?
