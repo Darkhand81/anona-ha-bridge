@@ -5,7 +5,7 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-# BUILD_ARCH is supplied by the Home Assistant builder (aarch64/amd64/armv7).
+# BUILD_ARCH is supplied by the Home Assistant builder (aarch64/amd64).
 ARG BUILD_ARCH
 
 # ffmpeg powers the talkback transcode (any input -> Ogg/Opus).
