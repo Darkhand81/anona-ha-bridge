@@ -52,7 +52,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push add-on image
-        uses: home-assistant/builder@master
+        # Pinned: the current builder (@master, 2026.x) dropped the per-arch
+        # --armv7 flag; 2024.08.2 still supports --aarch64/--amd64/--armv7.
+        uses: home-assistant/builder@2024.08.2
         with:
           args: >-
             --${{ matrix.arch }}
