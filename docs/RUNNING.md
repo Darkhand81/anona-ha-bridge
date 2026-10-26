@@ -168,7 +168,7 @@ Images are built and pushed by
 2. Commit and push to `main`.
 3. Publish a **GitHub Release** (tag it to match, e.g. `v0.1.1`), or run the
    workflow manually (**Actions → Build add-on images → Run workflow**).
-4. CI cross-compiles the binary per arch (aarch64/amd64/armv7) and uses the
+4. CI cross-compiles the binary per arch (aarch64/amd64) and uses the
    Home Assistant builder to push `ghcr.io/darkhand81/anona-ha-bridge/<arch>-anona_bridge:<version>`
    using the built-in `GITHUB_TOKEN` (no extra secrets).
 
