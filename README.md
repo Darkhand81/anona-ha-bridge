@@ -55,10 +55,11 @@ This repository is a Home Assistant add-on repository. In Home Assistant go to
 then install **Anona Pano Bridge**. Configure your account `email`/`password` and
 `region`, and start it. Full guide: [`addon/anona_bridge/DOCS.md`](addon/anona_bridge/DOCS.md).
 
-> The add-on image builds from this repository's published source
-> (`go install …@ANONA_REF`), so push your changes and pin `ANONA_REF` in
-> [`addon/anona_bridge/build.yaml`](addon/anona_bridge/build.yaml) to a tag or
-> commit for reproducible builds.
+> The add-on installs **prebuilt multi-arch images** from GHCR, published by the
+> release workflow ([`.github/workflows/build-addon.yaml`](.github/workflows/build-addon.yaml)).
+> To ship a build, bump `version` in
+> [`addon/anona_bridge/config.yaml`](addon/anona_bridge/config.yaml) and publish a
+> GitHub Release. See [`docs/RUNNING.md`](docs/RUNNING.md) for the release steps.
 
 ### As a standalone binary
 

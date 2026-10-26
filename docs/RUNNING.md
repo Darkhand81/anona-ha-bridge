@@ -151,14 +151,31 @@ Repositories**, then install **Anona Pano Bridge**.
 - Options (`config.yaml`): `email`, `password`, `region`, optional `devices`
   allowlist, MQTT settings, `has_battery`, `token_refresh`. MQTT auto-discovers
   the Mosquitto add-on when `mqtt_url` is blank (`services: mqtt:want`).
-- The image builds on-device (`Dockerfile`, `build.yaml`): a Go build stage runs
-  `go install github.com/Darkhand81/anona-ha-bridge/cmd/anona-bridge@<ANONA_REF>`
-  then copies the binary onto the HA base with `ffmpeg`. **This fetches the
-  source from the published GitHub module** — push the repo and pin `ANONA_REF`
-  in `build.yaml` to a tag/commit for reproducible builds.
+- Home Assistant pulls **prebuilt multi-arch images** from GHCR
+  (`config.yaml` `image:`), so there is no on-device build. The images are
+  produced by the release workflow (below); the `Dockerfile` just drops the
+  CI-compiled binary onto the HA base with `ffmpeg`.
 - Runs with `host_network: true` so WebRTC host ICE candidates are the LAN IP
   (matching the proven direct-P2P setup) and RTSP `:8554` / talkback `:8080` are
   reachable on the host. `run.sh` maps the options to the `ANONA_*` env above.
+
+### Releasing a new add-on build
+
+Images are built and pushed by
+[`.github/workflows/build-addon.yaml`](../.github/workflows/build-addon.yaml):
+
+1. Bump `version` in `addon/anona_bridge/config.yaml`.
+2. Commit and push to `main`.
+3. Publish a **GitHub Release** (tag it to match, e.g. `v0.1.1`), or run the
+   workflow manually (**Actions → Build add-on images → Run workflow**).
+4. CI cross-compiles the binary per arch (aarch64/amd64/armv7) and uses the
+   Home Assistant builder to push `ghcr.io/darkhand81/anona-ha-bridge/<arch>-anona_bridge:<version>`
+   using the built-in `GITHUB_TOKEN` (no extra secrets).
+
+Home Assistant then offers the new `version` and pulls the image. For HA to pull
+without credentials, make the GHCR packages **public** (GitHub → the package →
+Package settings → Change visibility) once; otherwise configure registry auth in
+Home Assistant.
 
 See [`addon/anona_bridge/DOCS.md`](../addon/anona_bridge/DOCS.md) for the
 end-user guide.

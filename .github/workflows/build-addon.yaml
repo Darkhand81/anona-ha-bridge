@@ -1,0 +1,62 @@
+name: Build add-on images
+
+# Builds the multi-arch Home Assistant add-on images and pushes them to GHCR.
+# Images are tagged with the `version` in addon/anona_bridge/config.yaml, so a
+# release = bump that version, then publish a GitHub Release (or run this
+# workflow manually).
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [aarch64, amd64, armv7]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Cross-compile the bridge
+        run: |
+          set -eu
+          case "${{ matrix.arch }}" in
+            aarch64) export GOARCH=arm64 ;;
+            amd64)   export GOARCH=amd64 ;;
+            armv7)   export GOARCH=arm GOARM=7 ;;
+            *) echo "unknown arch ${{ matrix.arch }}" >&2; exit 1 ;;
+          esac
+          mkdir -p addon/anona_bridge/bin
+          CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags "-s -w" \
+            -o "addon/anona_bridge/bin/anona-bridge.${{ matrix.arch }}" ./cmd/anona-bridge
+          file "addon/anona_bridge/bin/anona-bridge.${{ matrix.arch }}" || true
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push add-on image
+        uses: home-assistant/builder@master
+        with:
+          args: >-
+            --${{ matrix.arch }}
+            --target addon/anona_bridge
+            --image "anona-ha-bridge/{arch}-anona_bridge"
+            --docker-hub "ghcr.io/darkhand81"
+            --addon

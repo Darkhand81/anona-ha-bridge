@@ -21,8 +21,8 @@ refreshes the cloud token so it keeps running unattended.
 2. Install **Anona Pano Bridge** from the store.
 3. Fill in the options (below) and start it.
 
-> The image is built on-device from the published source the first time you
-> install it, so the first start takes a few minutes.
+> The add-on installs a prebuilt multi-arch image from GHCR, so it starts
+> quickly (no on-device compile).
 
 ## Options
 

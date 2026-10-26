@@ -5,8 +5,3 @@ build_from:
 labels:
   org.opencontainers.image.title: Anona Pano Bridge
   org.opencontainers.image.source: https://github.com/Darkhand81/anona-ha-bridge
-args:
-  # Module + git ref the add-on image is built from. Pin REF to a tag/commit for
-  # reproducible builds; defaults to the latest main.
-  ANONA_MODULE: github.com/Darkhand81/anona-ha-bridge
-  ANONA_REF: main

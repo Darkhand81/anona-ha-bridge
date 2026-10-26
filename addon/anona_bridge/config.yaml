@@ -5,6 +5,11 @@ description: >-
   Bridge 70mai Anona Pano cameras to Home Assistant — live RTSP (for go2rtc),
   MQTT discovery (PTZ, switches, sensors, motion/AI events) and two-way talkback.
 url: https://github.com/Darkhand81/anona-ha-bridge
+# Prebuilt multi-arch images published to GHCR by the release workflow. Home
+# Assistant pulls <image>:<version> instead of building on-device. {arch} is
+# substituted per architecture. Bump `version` and publish a GitHub Release to
+# ship a new build.
+image: "ghcr.io/darkhand81/anona-ha-bridge/{arch}-anona_bridge"
 # The bridge makes outbound WebRTC (ICE/TURN) P2P connections to the cameras on
 # the LAN, and serves RTSP on the host. Host networking matches the proven setup
 # (host ICE candidates = LAN IP) and exposes RTSP :8554 / talkback :8080 directly.
