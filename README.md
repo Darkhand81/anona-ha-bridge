@@ -65,6 +65,7 @@ as devices with all their controls and sensors.
 | **region** | Yes | `INTL`, `EU`, or `OTHERS` — match the app. |
 | **devices** | No | List specific camera IDs to bridge. Leave empty for **all** cameras. |
 | **has_battery** | No | Turn on only for battery models (most are mains-powered). |
+| **rtsp_user** / **rtsp_password** | No | Set both to password-protect the video stream. Leave blank and it's open on your LAN. |
 | **mqtt_url** / **mqtt_user** / **mqtt_password** | No | Only if you use an external MQTT broker instead of the Mosquitto add-on. |
 
 (A couple of advanced options — `token_refresh`, `rtsp_listen`, `http_listen` —
@@ -84,6 +85,9 @@ streams:
 
 Then add the camera through the **WebRTC Camera** / go2rtc integration. (If you
 only have one camera, its stream name is `cam`.)
+
+If you set **rtsp_user** / **rtsp_password**, include them in the URL:
+`rtsp://user:pass@YOUR_HA_IP:8554/living_room`.
 
 ## Talking through the camera
 

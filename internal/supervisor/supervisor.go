@@ -27,6 +27,8 @@ type Options struct {
 	Region       string        // INTL / EU / OTHERS
 	Devices      []string      // deviceId allowlist; empty = every camera in the account
 	RTSPListen   string        // e.g. ":8554"
+	RTSPUser     string        // optional RTSP auth; empty = open
+	RTSPPass     string        // optional RTSP auth
 	HTTPListen   string        // e.g. ":8080" (talkback + health); "" disables
 	MQTTURL      string        // e.g. tcp://homeassistant:1883; "" disables MQTT
 	MQTTUser     string        // optional
@@ -86,7 +88,7 @@ func Run(ctx context.Context, email, password string, opt Options) error {
 		fmt.Printf("[sup] camera %q model=%s id=%s -> rtsp path /%s\n", t.name, t.dev.Model, t.dev.DeviceID, t.path)
 	}
 
-	rtsp, err := media.NewRTSPServer(opt.RTSPListen)
+	rtsp, err := media.NewRTSPServer(opt.RTSPListen, opt.RTSPUser, opt.RTSPPass)
 	if err != nil {
 		return fmt.Errorf("rtsp: %w", err)
 	}

@@ -7,12 +7,15 @@ import (
 	"time"
 
 	"github.com/bluenviron/gortsplib/v4"
+	"github.com/bluenviron/gortsplib/v4/pkg/auth"
 	"github.com/bluenviron/gortsplib/v4/pkg/base"
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
 	"github.com/pion/rtp"
 	"github.com/pion/webrtc/v4"
 )
+
+const rtspRealm = "anona-bridge"
 
 // Server republishes one or more cameras' WebRTC RTP as RTSP for readers such as
 // go2rtc. A single listener serves many cameras, each on its own path; the
@@ -22,16 +25,50 @@ type Server struct {
 	srv     *gortsplib.Server
 	mu      sync.Mutex
 	streams map[string]*rtspStream
+
+	// Optional credentials. When user is empty the server is open (default).
+	user, pass, nonce string
 }
 
-func NewRTSPServer(listen string) (*Server, error) {
-	s := &Server{streams: map[string]*rtspStream{}}
+// NewRTSPServer starts the RTSP listener. If user is non-empty, readers must
+// authenticate (basic or digest) with user/pass; otherwise the server is open.
+func NewRTSPServer(listen, user, pass string) (*Server, error) {
+	s := &Server{streams: map[string]*rtspStream{}, user: user, pass: pass}
+	if user != "" {
+		n, err := auth.GenerateNonce()
+		if err != nil {
+			return nil, err
+		}
+		s.nonce = n
+	}
 	s.srv = &gortsplib.Server{Handler: s, RTSPAddress: listen}
 	if err := s.srv.Start(); err != nil {
 		return nil, err
 	}
-	fmt.Printf("[rtsp] listening on rtsp://%s/<path>\n", listen)
+	authNote := "open (no auth)"
+	if user != "" {
+		authNote = "auth required"
+	}
+	fmt.Printf("[rtsp] listening on rtsp://%s/<path> (%s)\n", listen, authNote)
 	return s, nil
+}
+
+// authFail returns a 401 response when credentials are required and the request
+// fails validation, or nil when the request is allowed (including when no
+// credentials are configured).
+func (s *Server) authFail(req *base.Request) *base.Response {
+	if s.user == "" {
+		return nil
+	}
+	if err := auth.Validate(req, s.user, s.pass, nil, rtspRealm, s.nonce); err != nil {
+		return &base.Response{
+			StatusCode: base.StatusUnauthorized,
+			Header: base.Header{
+				"WWW-Authenticate": auth.GenerateWWWAuthenticate(nil, rtspRealm, s.nonce),
+			},
+		}
+	}
+	return nil
 }
 
 func normPath(p string) string { return strings.Trim(p, "/") }
@@ -72,6 +109,9 @@ func (s *Server) OnConnOpen(*gortsplib.ServerHandlerOnConnOpenCtx)       {}
 func (s *Server) OnSessionOpen(*gortsplib.ServerHandlerOnSessionOpenCtx) {}
 
 func (s *Server) OnDescribe(ctx *gortsplib.ServerHandlerOnDescribeCtx) (*base.Response, *gortsplib.ServerStream, error) {
+	if resp := s.authFail(ctx.Request); resp != nil {
+		return resp, nil, nil
+	}
 	st := s.lookup(ctx.Path)
 	if st == nil {
 		return &base.Response{StatusCode: base.StatusNotFound}, nil, nil
@@ -80,6 +120,9 @@ func (s *Server) OnDescribe(ctx *gortsplib.ServerHandlerOnDescribeCtx) (*base.Re
 }
 
 func (s *Server) OnSetup(ctx *gortsplib.ServerHandlerOnSetupCtx) (*base.Response, *gortsplib.ServerStream, error) {
+	if resp := s.authFail(ctx.Request); resp != nil {
+		return resp, nil, nil
+	}
 	st := s.lookup(ctx.Path)
 	if st == nil {
 		return &base.Response{StatusCode: base.StatusNotFound}, nil, nil

@@ -32,6 +32,8 @@ options:
   mqtt_password: ""
   has_battery: false
   token_refresh: "6h"
+  rtsp_user: ""
+  rtsp_password: ""
   rtsp_listen: ":8554"
   http_listen: ":8080"
 schema:
@@ -45,5 +47,7 @@ schema:
   mqtt_password: password?
   has_battery: bool?
   token_refresh: str?
+  rtsp_user: str?
+  rtsp_password: password?
   rtsp_listen: str?
   http_listen: str?

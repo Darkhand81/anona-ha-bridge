@@ -11,6 +11,12 @@ export ANONA_RTSP_LISTEN="$(bashio::config 'rtsp_listen')"
 export ANONA_HTTP_LISTEN="$(bashio::config 'http_listen')"
 export ANONA_TOKEN_REFRESH="$(bashio::config 'token_refresh')"
 
+# Optional RTSP auth: leave blank to keep the stream open.
+if bashio::config.has_value 'rtsp_user'; then
+    export ANONA_RTSP_USER="$(bashio::config 'rtsp_user')"
+    export ANONA_RTSP_PASS="$(bashio::config 'rtsp_password')"
+fi
+
 if bashio::config.true 'has_battery'; then
     export ANONA_HAS_BATTERY=1
 fi

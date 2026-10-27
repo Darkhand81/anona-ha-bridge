@@ -67,6 +67,8 @@ func optionsFromEnv() supervisor.Options {
 	opt := supervisor.Options{
 		Region:     envOr("ANONA_REGION", "INTL"),
 		RTSPListen: envOr("ANONA_RTSP_LISTEN", ":8554"),
+		RTSPUser:   os.Getenv("ANONA_RTSP_USER"),
+		RTSPPass:   os.Getenv("ANONA_RTSP_PASS"),
 		HTTPListen: envOr("ANONA_HTTP_LISTEN", ":8080"),
 		MQTTURL:    os.Getenv("ANONA_MQTT_URL"),
 		MQTTUser:   os.Getenv("ANONA_MQTT_USER"),

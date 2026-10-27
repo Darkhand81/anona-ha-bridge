@@ -54,6 +54,7 @@ default) serves health and talkback.
 | `ANONA_REGION` | `INTL` | INTL / EU / OTHERS |
 | `ANONA_DEVICES` | all | comma-separated `deviceId` allowlist |
 | `ANONA_RTSP_LISTEN` | `:8554` | RTSP bind address |
+| `ANONA_RTSP_USER` / `_PASS` | — | optional RTSP auth; blank = open stream |
 | `ANONA_HTTP_LISTEN` | `:8080` | health + talkback bind address |
 | `ANONA_MQTT_URL` / `_USER` / `_PASS` | — | MQTT broker (blank = no MQTT) |
 | `ANONA_HAS_BATTERY` | — | `1` forces battery entities |
@@ -87,6 +88,9 @@ Find a camera's `deviceId` with the Python probe
 streams:
   living_room: rtsp://127.0.0.1:8554/living_room   # or /cam in single-camera mode
 ```
+
+If `ANONA_RTSP_USER`/`ANONA_RTSP_PASS` are set, put the credentials in the URL:
+`rtsp://user:pass@127.0.0.1:8554/living_room`.
 
 Home Assistant then gets a camera entity via the go2rtc integration (WebRTC/HLS,
 snapshots).
