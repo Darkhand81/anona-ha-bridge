@@ -162,6 +162,9 @@ Repositories**, then install **Anona Pano Bridge**.
 - Runs with `host_network: true` so WebRTC host ICE candidates are the LAN IP
   (matching the proven direct-P2P setup) and RTSP `:8554` / talkback `:8080` are
   reachable on the host. `run.sh` maps the options to the `ANONA_*` env above.
+- Ships an `apparmor.txt` profile (confines networking + capabilities), which
+  also raises the Home Assistant add-on security rating. The `host_network: true`
+  is the one remaining rating penalty — kept for reliable direct-P2P media.
 
 ### Releasing a new add-on build
 
