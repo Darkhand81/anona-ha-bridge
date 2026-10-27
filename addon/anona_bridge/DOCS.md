@@ -16,10 +16,13 @@ refreshes the cloud token so it keeps running unattended.
 
 ## Installation
 
-1. In Home Assistant go to **Settings → Add-ons → Add-on store**, open the
-   ⋮ menu → **Repositories**, and add this repository's URL.
-2. Install **Anona Pano Bridge** from the store.
-3. Fill in the options (below) and start it.
+1. In Home Assistant go to **Settings → Apps → Install Apps** (older versions:
+   **Settings → Add-ons → Add-on Store**), open the ⋮ menu → **Repositories**,
+   and add this repository's URL.
+2. Install **Anona Pano Bridge** from the list.
+3. Fill in the options (below) and start it. Open the **Log** tab to watch each
+   camera come online — it also prints each camera's stream name (needed for
+   video below).
 
 > The add-on installs a prebuilt multi-arch image from GHCR, so it starts
 > quickly (no on-device compile).
@@ -34,6 +37,7 @@ refreshes the cloud token so it keeps running unattended.
 | `mqtt_url` | no | e.g. `tcp://core-mosquitto:1883`. Leave blank to auto-use the Mosquitto add-on. |
 | `mqtt_user` / `mqtt_password` | no | Only when `mqtt_url` is set manually. |
 | `has_battery` | no | Force battery entities (mains models hide them; HM1010 has none). |
+| `rtsp_user` / `rtsp_password` | no | Set both to require a login on the video stream. Blank = open on your LAN. |
 | `token_refresh` | no | How often to re-login, e.g. `6h`. |
 | `rtsp_listen` / `http_listen` | no | Bind addresses; defaults `:8554` / `:8080`. |
 
@@ -42,16 +46,46 @@ each discovered camera is printed with its id, model, and RTSP path.
 
 ## Using the video in Home Assistant
 
-The add-on serves RTSP on the host. Point go2rtc at it (one entry per camera —
-the path is printed in the log, derived from the camera's name):
+The add-on serves each camera as an RTSP stream on the host. To display it you
+need the camera's **RTSP URL**.
+
+### 1. Find your RTSP URL
+
+```
+rtsp://<HA_IP>:8554/<stream-name>
+```
+
+- **`<HA_IP>`** — your Home Assistant machine's IP (**Settings → System →
+  Network**, or your router). Another add-on on the same host can use `127.0.0.1`.
+- **`<stream-name>`** — from this add-on's **Log**. Each camera prints:
+  ```
+  [living_room_cam] live; rtsp path /living_room_cam
+  ```
+  The part after the slash is the stream name (derived from the camera's name).
+
+Example: `rtsp://192.168.1.50:8554/living_room_cam`. If you set `rtsp_user` /
+`rtsp_password`, use `rtsp://user:pass@192.168.1.50:8554/living_room_cam`.
+
+Tip: paste the URL into VLC (**Media → Open Network Stream**) to confirm it plays.
+
+### 2. Quickest display — Generic Camera
+
+1. **Settings → Devices & Services → Add Integration → Generic Camera.**
+2. Put your RTSP URL in **Stream Source URL**, leave the still-image field blank,
+   and finish. Confirm the preview.
+3. You get a `camera.` entity — add a **Picture** or **Camera** card pointing at
+   it. Repeat per camera.
+
+### 3. Lower latency — go2rtc (optional)
+
+Install the **go2rtc** add-on and add one entry per camera (same stream name),
+then add the camera via the **WebRTC Camera** integration:
 
 ```yaml
 # go2rtc configuration
 streams:
-  living_room: rtsp://<HA-host-ip>:8554/living_room
+  living_room_cam: rtsp://127.0.0.1:8554/living_room_cam
 ```
-
-Then add the camera via the go2rtc / WebRTC integration.
 
 ## Talkback
 
