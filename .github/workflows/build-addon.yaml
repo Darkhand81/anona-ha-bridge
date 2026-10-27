@@ -11,7 +11,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   build:
@@ -44,11 +43,13 @@ jobs:
           file "addon/anona_bridge/bin/anona-bridge.${{ matrix.arch }}" || true
 
       - name: Log in to GHCR
+        # Uses a user PAT (write:packages) rather than GITHUB_TOKEN, so pushes
+        # create/own packages in the user namespace regardless of repo linkage.
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build and push add-on image
         uses: home-assistant/builder@master
