@@ -28,34 +28,36 @@ won't get switches that do nothing.
 
 You'll need:
 
-1. **Home Assistant OS / Supervised** (so you can install add-ons).
-2. The **Mosquitto broker** add-on (Settings → Add-ons → Add-on store →
-   *Mosquitto broker*). This add-on uses it automatically for the entities.
-3. The **go2rtc** add-on *or* the built-in WebRTC Camera integration, to view the
-   video (see [Watching the video](#watching-the-video)).
-4. Your **Anona / 70mai account** email and password, and your region
+1. **Home Assistant OS / Supervised** (so you can install apps/add-ons).
+2. The **Mosquitto broker** add-on (install it the same way as below). The bridge
+   uses it automatically to create the camera's controls and sensors.
+3. Your **Anona / 70mai account** email and password, and your region
    (**INTL**, **EU**, or **OTHERS** — whichever you chose when signing up).
-5. An **internet connection** — the cameras are cloud-connected, so the bridge
+4. An **internet connection** — the cameras are cloud-connected, so the bridge
    needs to reach the Anona cloud with your account (see
    [Good to know](#good-to-know)).
 
+(For video you don't need anything extra — the quickest option below uses the
+built-in Generic Camera integration.)
+
 ## Installing
 
-1. In Home Assistant, go to **Settings → Add-ons → Add-on store**.
+1. In Home Assistant, go to **Settings → Apps → Install Apps**
+   (older versions: **Settings → Add-ons → Add-on Store**).
 2. Click the **⋮** menu (top right) → **Repositories**.
-3. Paste this repository's URL and click **Add**:
+3. Paste this repository's URL and click **Add**, then close the dialog:
    ```
    https://github.com/Darkhand81/anona-ha-bridge
    ```
-4. Close the dialog, find **Anona Pano Bridge** in the store, and click
-   **Install**.
+4. Find **Anona Pano Bridge** in the list and click **Install**.
 5. Open the **Configuration** tab, enter your account **email**, **password**, and
    **region**, and **Save**.
-6. **Start** the add-on. Open the **Log** tab — within a minute or so you should
-   see each camera discovered and come online.
+6. **Start** the add-on, then open the **Log** tab — within a minute or so you
+   should see each camera discovered and come online. Keep this log handy: it
+   shows each camera's stream name, which you'll need for video below.
 
-Your cameras then appear automatically in **Settings → Devices & Services → MQTT**
-as devices with all their controls and sensors.
+Your cameras' controls and sensors appear automatically under
+**Settings → Devices & Services → MQTT** as devices. Video takes one more step.
 
 ### Options
 
@@ -74,20 +76,59 @@ have sensible defaults you normally won't touch.)
 ## Watching the video
 
 The add-on publishes each camera as an RTSP stream on your Home Assistant host.
-The easiest way to view it is the **go2rtc** add-on: add one line per camera,
-using the stream name shown in the add-on's log (it's based on the camera's name).
+To show it in Home Assistant you need that camera's **RTSP URL**.
+
+### 1. Find your RTSP URL
+
+The URL looks like:
+
+```
+rtsp://<HA_IP>:8554/<stream-name>
+```
+
+- **`<HA_IP>`** — your Home Assistant machine's IP on your network. Find it under
+  **Settings → System → Network**, or from your router. (If another add-on, like
+  go2rtc, connects on the same box, you can use `127.0.0.1` there instead.)
+- **`<stream-name>`** — shown in the add-on **Log**. Each camera prints a line like:
+  ```
+  [living_room_cam] live; rtsp path /living_room_cam
+  ```
+  The part after the slash (`living_room_cam` here) is the stream name. It's
+  derived from the camera's name, so a camera called "Front Door" becomes
+  `front_door`.
+
+So a full example is `rtsp://192.168.1.50:8554/living_room_cam`.
+
+If you set the optional **rtsp_user** / **rtsp_password**, put them in the URL:
+`rtsp://user:pass@192.168.1.50:8554/living_room_cam`.
+
+> Tip: test the URL in [VLC](https://www.videolan.org/) (**Media → Open Network
+> Stream**) first. If it plays there, Home Assistant will be happy too.
+
+### 2. Quickest display — Generic Camera
+
+This gives you a working camera entity and dashboard card with no extra add-ons:
+
+1. **Settings → Devices & Services → Add Integration → Generic Camera.**
+2. For **Stream Source URL**, paste your RTSP URL from step 1.
+3. Leave the still-image field blank, finish the dialog, and confirm the preview.
+4. You now have a `camera.` entity — add a **Picture** or **Camera** card to your
+   dashboard and point it at that entity.
+
+Repeat for each camera.
+
+### 3. Lower latency — go2rtc (optional)
+
+For snappier, WebRTC-based viewing, install the **go2rtc** add-on and add one
+line per camera (using the same stream name from the log):
 
 ```yaml
 # go2rtc configuration
 streams:
-  living_room: rtsp://YOUR_HA_IP:8554/living_room
+  living_room_cam: rtsp://127.0.0.1:8554/living_room_cam
 ```
 
-Then add the camera through the **WebRTC Camera** / go2rtc integration. (If you
-only have one camera, its stream name is `cam`.)
-
-If you set **rtsp_user** / **rtsp_password**, include them in the URL:
-`rtsp://user:pass@YOUR_HA_IP:8554/living_room`.
+Then add the camera through the **WebRTC Camera** integration.
 
 ## Talking through the camera
 
