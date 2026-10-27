@@ -30,6 +30,13 @@ import (
 )
 
 func main() {
+	// ANONA_DEBUG=1 turns on pion's verbose ICE/WebRTC logging (to stderr) by
+	// setting PION_LOG_DEBUG, which pion's default logger reads at startup. Set
+	// it before anything creates the WebRTC API.
+	if os.Getenv("ANONA_DEBUG") == "1" && os.Getenv("PION_LOG_DEBUG") == "" {
+		os.Setenv("PION_LOG_DEBUG", "all")
+	}
+
 	opt := optionsFromEnv()
 
 	var email, password string

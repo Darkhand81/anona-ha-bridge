@@ -59,6 +59,7 @@ default) serves health and talkback.
 | `ANONA_MQTT_URL` / `_USER` / `_PASS` | — | MQTT broker (blank = no MQTT) |
 | `ANONA_HAS_BATTERY` | — | `1` forces battery entities |
 | `ANONA_TOKEN_REFRESH` | `6h` | proactive re-login interval |
+| `ANONA_DEBUG` | — | `1` enables verbose pion WebRTC/ICE logging (sets `PION_LOG_DEBUG=all`) |
 
 ### Talkback
 

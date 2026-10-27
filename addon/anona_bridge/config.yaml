@@ -1,5 +1,5 @@
 name: Anona Pano Bridge
-version: "0.1.0"
+version: "0.1.1"
 slug: anona_bridge
 description: >-
   Bridge 70mai Anona Pano cameras to Home Assistant — live RTSP (for go2rtc),
@@ -36,6 +36,7 @@ options:
   rtsp_password: ""
   rtsp_listen: ":8554"
   http_listen: ":8080"
+  debug: false
 schema:
   email: email
   password: password
@@ -51,3 +52,4 @@ schema:
   rtsp_password: password?
   rtsp_listen: str?
   http_listen: str?
+  debug: bool?

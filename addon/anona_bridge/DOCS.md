@@ -40,6 +40,7 @@ refreshes the cloud token so it keeps running unattended.
 | `rtsp_user` / `rtsp_password` | no | Set both to require a login on the video stream. Blank = open on your LAN. |
 | `token_refresh` | no | How often to re-login, e.g. `6h`. |
 | `rtsp_listen` / `http_listen` | no | Bind addresses; defaults `:8554` / `:8080`. |
+| `debug` | no | Turn on verbose WebRTC/ICE logging (in the add-on Log) to diagnose stream failures. |
 
 Finding a `deviceId`: start the add-on with `devices` empty and read the log —
 each discovered camera is printed with its id, model, and RTSP path.

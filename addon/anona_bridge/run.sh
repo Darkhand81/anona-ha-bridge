@@ -21,6 +21,12 @@ if bashio::config.true 'has_battery'; then
     export ANONA_HAS_BATTERY=1
 fi
 
+# Verbose pion ICE/WebRTC logging for diagnosing stream failures.
+if bashio::config.true 'debug'; then
+    export ANONA_DEBUG=1
+    bashio::log.info "Debug logging enabled (verbose WebRTC/ICE)"
+fi
+
 # Optional deviceId allowlist -> comma-separated.
 if bashio::config.has_value 'devices'; then
     export ANONA_DEVICES="$(bashio::config 'devices | join(",")')"
