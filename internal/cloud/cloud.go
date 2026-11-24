@@ -198,9 +198,9 @@ func (c *Client) StartRefresher(interval time.Duration, stop <-chan struct{}) {
 }
 
 type Device struct {
-	DeviceID, Model, NickName, IP string
-	Type, Module                  int
-	Channel                       int64
+	DeviceID, Model, NickName, IP, HomeID string
+	Type, Module                          int
+	Channel                               int64
 }
 
 func (c *Client) DevicesInHome(homeID string) ([]Device, error) {
@@ -212,7 +212,7 @@ func (c *Client) DevicesInHome(homeID string) ([]Device, error) {
 	var ds []Device
 	for _, it := range arr {
 		m, _ := it.(map[string]any)
-		d := Device{DeviceID: str(m["deviceId"]), Model: str(m["model"]), NickName: str(m["deviceNickName"]), IP: str(m["ip"])}
+		d := Device{DeviceID: str(m["deviceId"]), Model: str(m["model"]), NickName: str(m["deviceNickName"]), IP: str(m["ip"]), HomeID: homeID}
 		d.Type = int(num(m["type"]))
 		d.Module = int(num(m["module"]))
 		d.Channel = int64(num(m["channel"]))
@@ -299,6 +299,27 @@ func (c *Client) Online(deviceID string) (bool, error) {
 	rb, _ := out["resultBodyObject"].(map[string]any)
 	on, _ := rb["online"].(bool)
 	return on, nil
+}
+
+// EventTags returns the detection tags of a pushed event: AlgTag numbers as strings (seen: "1" = person).
+// Body as the app's getPushFileDetails; shortcut: viewType 1 (owner), shared cameras use 3.
+func (c *Client) EventTags(homeID, eventID string, eventTs int64) ([]string, error) {
+	out, err := c.Call("/anona/event/api/getEventInfoV2", map[string]any{
+		"viewType": 1, "homeId": homeID, "eventTs": eventTs, "eventId": eventID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if e, _ := out["error"].(bool); e {
+		return nil, fmt.Errorf("getEventInfoV2: %v %v", out["errorCode"], out["errorMessage"])
+	}
+	rb, _ := out["resultBodyObject"].(map[string]any)
+	arr, _ := rb["eventTags"].([]any)
+	var tags []string
+	for _, t := range arr {
+		tags = append(tags, fmt.Sprint(t))
+	}
+	return tags, nil
 }
 
 func str(v any) string { s, _ := v.(string); return s }

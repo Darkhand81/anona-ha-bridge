@@ -294,6 +294,14 @@ func (b *Bridge) startMQTT(ch *control.Channel, t cameraTarget, clientID string)
 		if tags := cam.ParseEventTags(p.Packet); len(tags) > 0 {
 			hub.OnEvent(tags)
 		}
+		if id, ts := cam.EventRef(p.Packet); id != "" {
+			go func() {
+				tags, err := b.cl.EventTags(t.dev.HomeID, id, ts)
+				names := cam.TagNames(tags)
+				fmt.Printf("[%s] event tags=%v err=%v -> %v\n", t.path, tags, err, names)
+				hub.OnEvent(names)
+			}()
+		}
 	})
 	return hub, nil
 }
