@@ -3,7 +3,10 @@
 package cam
 
 import (
+	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Darkhand81/anona-ha-bridge/internal/control"
@@ -296,6 +299,48 @@ func (c *Controller) SetBabyCry(on bool) error { return c.setDetection("sound", 
 var algName = map[uint64]string{
 	1: "person", 2: "person", 3: "vehicle", 4: "package", 5: "animal",
 	6: "motion", 7: "baby_cry", 9: "doorbell", 10: "package", 11: "animal", 12: "animal", 13: "animal",
+}
+
+// EventRef returns eventId and eventTs of a JSON detection push
+// ({"businessType":3000001,...,"eventId":...,"eventTs":...}), or "" for anything else.
+// The push has no detection type; fetch it with cloud.EventTags.
+func EventRef(packet []byte) (id string, ts int64) {
+	var ev struct {
+		EventID string `json:"eventId"`
+		EventTs int64  `json:"eventTs"`
+	}
+	if len(packet) == 0 || packet[0] != '{' || json.Unmarshal(packet, &ev) != nil {
+		return "", 0
+	}
+	return ev.EventID, ev.EventTs
+}
+
+// tagName maps the cloud's eventTags strings (app names, or AlgTag numbers) to event names.
+var tagName = map[string]string{
+	"human": "person", "person": "person", "people": "person",
+	"pet": "animal", "animal": "animal", "cat": "animal", "dog": "animal",
+	"vehicle": "vehicle", "car": "vehicle", "package": "package",
+	"motion": "motion", "move": "motion", "baby_cry": "baby_cry", "cry": "baby_cry",
+}
+
+// TagNames maps cloud eventTags to event names; unknown tags fall back to motion.
+func TagNames(tags []string) []string {
+	var names []string
+	seen := map[string]bool{}
+	for _, t := range tags {
+		n := tagName[strings.ToLower(t)]
+		if v, err := strconv.ParseUint(t, 10, 32); err == nil {
+			n = algName[v]
+		}
+		if n != "" && !seen[n] {
+			seen[n] = true
+			names = append(names, n)
+		}
+	}
+	if len(names) == 0 {
+		return []string{"motion"}
+	}
+	return names
 }
 
 // ParseEventTags returns the alg-tag event names in a REPORT_IPCAMERA_EVENT push.
